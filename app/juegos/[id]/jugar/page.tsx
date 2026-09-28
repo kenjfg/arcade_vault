@@ -68,7 +68,7 @@ export default function GamePlayerPage(props: PageProps<"/juegos/[id]/jugar">) {
           onNameChange={(value) => setNameOverride(value.toUpperCase().slice(0, 10))}
           onSave={handleSave}
           onRestart={restart}
-          onBackToLibrary={() => router.push("/")}
+          onBackToLibrary={() => router.push("/juegos")}
         />
       )}
     </div>
