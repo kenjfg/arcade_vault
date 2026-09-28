@@ -1,6 +1,6 @@
 # SPEC 01 — MVP visual de pantallas de Arcade Vault
 
-> **Status:** Aprobado
+> **Status:** Implemented
 > **Depends on:** Ninguno
 > **Date:** 2026-09-28
 > **Objective:** Portar al App Router de Next.js las cinco pantallas del prototipo (biblioteca, detalle, reproductor, autenticación y salón de la fama) manteniendo el diseño y la interacción visual de `references/templates/`, sin implementar ningún juego real.
@@ -99,17 +99,17 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `npm run dev` levanta sin errores y `/` muestra la Biblioteca con buscador y chips de categoría funcionando.
-- [ ] `/juegos/[id]` muestra portada, tags, descripción, stats y tabla de mejores puntuaciones para cada juego de `GAMES`.
-- [ ] Navegar a `/juegos/id-inexistente` responde 404 (`notFound`).
-- [ ] `/juegos/[id]/jugar` simula una partida: la puntuación sube sola, "Pausa" detiene el incremento, "Fin" abre el modal de guardado.
-- [ ] Guardar la puntuación en el modal la persiste en `localStorage` (`av_scores`) y muestra el estado "guardada".
-- [ ] `/iniciar-sesion` permite iniciar sesión, crear cuenta o entrar como invitado; iniciar sesión guarda el usuario en `localStorage` (`av_user`) y redirige a `/`.
-- [ ] Con sesión iniciada, el nav muestra el nombre de usuario y permite cerrar sesión; sin sesión muestra "Iniciar Sesión".
-- [ ] `/salon-de-la-fama` permite cambiar de juego por pestañas y muestra podio (top 3) + tabla completa; con sesión iniciada añade la fila "tu mejor marca".
-- [ ] El menú móvil (hamburguesa) abre/cierra el panel lateral y resalta la ruta activa igual que en el prototipo.
-- [ ] `npx tsc --noEmit` y `npm run lint` pasan sin errores.
-- [ ] No existe código de ningún juego jugable real: el reproductor es una simulación visual, tal como en `references/templates/reproductor.jsx`.
+- [x] `npm run dev` levanta sin errores y `/` muestra la Biblioteca con buscador y chips de categoría funcionando.
+- [x] `/juegos/[id]` muestra portada, tags, descripción, stats y tabla de mejores puntuaciones para cada juego de `GAMES`.
+- [x] Navegar a `/juegos/id-inexistente` responde 404 (`notFound`).
+- [x] `/juegos/[id]/jugar` simula una partida: la puntuación sube sola, "Pausa" detiene el incremento, "Fin" abre el modal de guardado.
+- [x] Guardar la puntuación en el modal la persiste en `localStorage` (`av_scores`) y muestra el estado "guardada".
+- [x] `/iniciar-sesion` permite iniciar sesión, crear cuenta o entrar como invitado; iniciar sesión guarda el usuario en `localStorage` (`av_user`) y redirige a `/`.
+- [x] Con sesión iniciada, el nav muestra el nombre de usuario y permite cerrar sesión; sin sesión muestra "Iniciar Sesión".
+- [x] `/salon-de-la-fama` permite cambiar de juego por pestañas y muestra podio (top 3) + tabla completa; con sesión iniciada añade la fila "tu mejor marca".
+- [x] El menú móvil (hamburguesa) abre/cierra el panel lateral y resalta la ruta activa igual que en el prototipo.
+- [x] `npx tsc --noEmit` y `npm run lint` pasan sin errores.
+- [x] No existe código de ningún juego jugable real: el reproductor es una simulación visual, tal como en `references/templates/reproductor.jsx`.
 
 ## Decisions
 
