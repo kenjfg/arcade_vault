@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // references/templates/ is a static CDN + in-browser Babel prototype
+    // (see AGENTS.md/CLAUDE.md): it runs as plain <script> tags in the
+    // browser, not through Node/ESLint's module or globals resolution.
+    "references/templates/**",
   ]),
 ]);
 
