@@ -1,6 +1,6 @@
 # SPEC 02 — Home (landing) de Arcade Vault
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01
 > **Date:** 2026-09-28
 > **Objective:** Portar a `/` la landing de `references/templates/home-about/home.jsx` con fidelidad visual exacta, moviendo la Biblioteca a `/juegos` y añadiendo el link "Inicio" al nav.
@@ -48,19 +48,19 @@ No introduce datos nuevos ni persistencia. El contenido de actividad, top jugado
 
 ## Acceptance criteria
 
-- [ ] `/` muestra el Home con los siete bloques en el orden y con los textos exactos de `home.jsx`.
-- [ ] El hero muestra los 8 silos flotando y los botones "EXPLORAR JUEGOS" (pulse) y "CREAR CUENTA" (magenta).
-- [ ] Las secciones marcadas `.reveal` empiezan ocultas y aparecen al entrar en el viewport, con el retardo escalonado de las cards.
-- [ ] El rail muestra los 6 primeros juegos de `GAMES`, y cada mini card navega a `/juegos/[id]` de ese juego.
-- [ ] "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" navegan a `/juegos`; "CREAR CUENTA" y "EMPEZAR GRATIS →" a `/iniciar-sesion`; "VER SALÓN →" a `/salon-de-la-fama`.
-- [ ] Las puntuaciones del ticker y del top se muestran con formato `es-ES` (ej. `+184.220`, `312.840`).
-- [ ] `/juegos` muestra la Biblioteca con buscador y chips de categoría funcionando, igual que antes en `/`.
-- [ ] "VOLVER AL VAULT" (detalle), "VOLVER A LA BIBLIOTECA" (salón) y "Volver a la biblioteca" (modal del reproductor) llevan a `/juegos`.
-- [ ] Iniciar sesión o entrar como invitado redirige a `/juegos`; cerrar sesión redirige a `/`.
-- [ ] El nav (desktop y móvil) muestra "Inicio" antes de "Biblioteca"; "Inicio" está activo solo en `/`, y "Biblioteca" en `/juegos`, `/juegos/[id]` y `/juegos/[id]/jugar`.
-- [ ] Hacer clic en el logo lleva a `/`.
-- [ ] Los breakpoints de la referencia se cumplen: feature grid 4 → 2 → 1 columnas, rail 6 → 3 → 2, actividad en una columna bajo 900px, y sin scroll horizontal a 375px.
-- [ ] No aparece el link "Acerca de" en el nav ni existe la ruta `/acerca-de`.
+- [x] `/` muestra el Home con los siete bloques en el orden y con los textos exactos de `home.jsx`.
+- [x] El hero muestra los 8 silos flotando y los botones "EXPLORAR JUEGOS" (pulse) y "CREAR CUENTA" (magenta).
+- [x] Las secciones marcadas `.reveal` empiezan ocultas y aparecen al entrar en el viewport, con el retardo escalonado de las cards.
+- [x] El rail muestra los 6 primeros juegos de `GAMES`, y cada mini card navega a `/juegos/[id]` de ese juego.
+- [x] "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" navegan a `/juegos`; "CREAR CUENTA" y "EMPEZAR GRATIS →" a `/iniciar-sesion`; "VER SALÓN →" a `/salon-de-la-fama`.
+- [x] Las puntuaciones del ticker y del top se muestran con formato `es-ES` (ej. `+184.220`, `312.840`).
+- [x] `/juegos` muestra la Biblioteca con buscador y chips de categoría funcionando, igual que antes en `/`.
+- [x] "VOLVER AL VAULT" (detalle), "VOLVER A LA BIBLIOTECA" (salón) y "Volver a la biblioteca" (modal del reproductor) llevan a `/juegos`.
+- [x] Iniciar sesión o entrar como invitado redirige a `/juegos`; cerrar sesión redirige a `/`.
+- [x] El nav (desktop y móvil) muestra "Inicio" antes de "Biblioteca"; "Inicio" está activo solo en `/`, y "Biblioteca" en `/juegos`, `/juegos/[id]` y `/juegos/[id]/jugar`.
+- [x] Hacer clic en el logo lleva a `/`.
+- [x] Los breakpoints de la referencia se cumplen: feature grid 4 → 2 → 1 columnas, rail 6 → 3 → 2, actividad en una columna bajo 900px, y sin scroll horizontal a 375px.
+- [x] No aparece el link "Acerca de" en el nav ni existe la ruta `/acerca-de`.
 - [ ] `npx tsc --noEmit` y `npm run lint` pasan sin errores.
 
 ## Decisions
