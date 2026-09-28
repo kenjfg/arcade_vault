@@ -44,6 +44,9 @@ export function Nav() {
           <Link href="/salon-de-la-fama" className={isActive("/salon-de-la-fama") ? "active" : ""}>
             Salón de la Fama
           </Link>
+          <Link href="/acerca" className={isActive("/acerca") ? "active" : ""}>
+            Acerca de
+          </Link>
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -81,6 +84,9 @@ export function Nav() {
           onClick={close}
         >
           Salón de la Fama
+        </Link>
+        <Link href="/acerca" className={isActive("/acerca") ? "active" : ""} onClick={close}>
+          Acerca de
         </Link>
         {user ? (
           <a
