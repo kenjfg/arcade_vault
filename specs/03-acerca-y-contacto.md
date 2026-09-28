@@ -1,6 +1,6 @@
 # SPEC 03 — Acerca de y formulario de contacto con envío real
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 02
 > **Date:** 2026-09-28
 > **Objective:** Portar a `/acerca` la pantalla de `references/templates/home-about/about.jsx` con fidelidad visual exacta, haciendo que su formulario de contacto envíe un correo real al equipo mediante una Server Action y Resend.
@@ -89,21 +89,21 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `/acerca` muestra hero, tres highlights, divisor y bloque de contacto con los textos exactos de `about.jsx`.
-- [ ] El divisor y el bloque de contacto empiezan ocultos y aparecen al entrar en el viewport.
-- [ ] Enviar con algún campo vacío (o solo espacios) hace temblar el formulario y no llama a la Server Action.
-- [ ] Mientras se envía, el botón muestra "ENVIANDO…" y está deshabilitado.
-- [ ] Con `.env.local` configurado, un envío válido hace llegar un correo a `CONTACT_TO_EMAIL` con asunto `[Arcade Vault] Mensaje de <nombre>`, cuerpo en texto plano con nombre, correo y mensaje, y `reply-to` igual al correo del jugador.
-- [ ] Tras un envío correcto se ve la terminal de éxito con "GRACIAS, <NOMBRE EN MAYÚSCULAS>." y el cursor parpadeando; "ENVIAR OTRO MENSAJE" vuelve al formulario vacío.
-- [ ] Sin `RESEND_API_KEY` o sin `CONTACT_TO_EMAIL`, enviar muestra la terminal en modo error (borde magenta, líneas `[ERROR]`) y el servidor registra qué variable falta; la app no falla al arrancar.
-- [ ] "REINTENTAR" vuelve al formulario con el nombre, el correo y el mensaje que se habían escrito.
-- [ ] Con el honeypot relleno, la respuesta es la terminal de éxito, no se llama a Resend y el servidor registra `[contact] honeypot`.
-- [ ] La acción rechaza (`invalid`, el formulario tiembla) un correo sin formato válido o campos que superen 60 / 254 / 2000 caracteres.
-- [ ] `RESEND_API_KEY` no aparece en ningún bundle de cliente (solo se lee en `app/acerca/actions.ts`).
-- [ ] `.env.example` está versionado con las tres variables y sin valores secretos; `.env.local` sigue ignorado.
-- [ ] El nav (escritorio y móvil) muestra "Acerca de" después de "Salón de la Fama", activo solo en `/acerca`.
-- [ ] Breakpoints de la referencia: highlights en una columna bajo 820px, contacto en una columna bajo 900px, y sin scroll horizontal a 375px.
-- [ ] `npx tsc --noEmit` y `npm run lint` pasan sin errores.
+- [x] `/acerca` muestra hero, tres highlights, divisor y bloque de contacto con los textos exactos de `about.jsx`.
+- [x] El divisor y el bloque de contacto empiezan ocultos y aparecen al entrar en el viewport.
+- [x] Enviar con algún campo vacío (o solo espacios) hace temblar el formulario y no llama a la Server Action.
+- [x] Mientras se envía, el botón muestra "ENVIANDO…" y está deshabilitado.
+- [x] Con `.env.local` configurado, un envío válido hace llegar un correo a `CONTACT_TO_EMAIL` con asunto `[Arcade Vault] Mensaje de <nombre>`, cuerpo en texto plano con nombre, correo y mensaje, y `reply-to` igual al correo del jugador.
+- [x] Tras un envío correcto se ve la terminal de éxito con "GRACIAS, <NOMBRE EN MAYÚSCULAS>." y el cursor parpadeando; "ENVIAR OTRO MENSAJE" vuelve al formulario vacío.
+- [x] Sin `RESEND_API_KEY` o sin `CONTACT_TO_EMAIL`, enviar muestra la terminal en modo error (borde magenta, líneas `[ERROR]`) y el servidor registra qué variable falta; la app no falla al arrancar.
+- [x] "REINTENTAR" vuelve al formulario con el nombre, el correo y el mensaje que se habían escrito.
+- [x] Con el honeypot relleno, la respuesta es la terminal de éxito, no se llama a Resend y el servidor registra `[contact] honeypot`.
+- [x] La acción rechaza (`invalid`, el formulario tiembla) un correo sin formato válido o campos que superen 60 / 254 / 2000 caracteres.
+- [x] `RESEND_API_KEY` no aparece en ningún bundle de cliente (solo se lee en `app/acerca/actions.ts`).
+- [x] `.env.example` está versionado con las tres variables y sin valores secretos; `.env.local` sigue ignorado.
+- [x] El nav (escritorio y móvil) muestra "Acerca de" después de "Salón de la Fama", activo solo en `/acerca`.
+- [x] Breakpoints de la referencia: highlights en una columna bajo 820px, contacto en una columna bajo 900px, y sin scroll horizontal a 375px.
+- [x] `npx tsc --noEmit` y `npm run lint` pasan sin errores.
 
 ## Decisions
 
