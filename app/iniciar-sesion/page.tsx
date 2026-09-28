@@ -10,12 +10,12 @@ export default function AuthPage() {
 
   const handleLogin = (name: string) => {
     login({ name });
-    router.push("/");
+    router.push("/juegos");
   };
 
   const handleGuest = () => {
     login(null);
-    router.push("/");
+    router.push("/juegos");
   };
 
   return (
