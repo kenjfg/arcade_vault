@@ -1,26 +1,43 @@
+import type { ReactNode } from "react";
+
 interface CrtScreenProps {
   title: string;
   paused: boolean;
+  // A real game to show instead of the decorative arena.
+  children?: ReactNode;
 }
 
-export function CrtScreen({ title, paused }: CrtScreenProps) {
+export function CrtScreen({ title, paused, children }: CrtScreenProps) {
   return (
     <div className="crt">
       <div className="crt-screen">
-        <div className="game-arena">
-          <div className="grid-floor"></div>
-          <div className="enemy e1"></div>
-          <div className="enemy e2"></div>
-          <div className="enemy e3"></div>
-          <div className="player-ship"></div>
-        </div>
+        {children ?? (
+          <div className="game-arena">
+            <div className="grid-floor"></div>
+            <div className="enemy e1"></div>
+            <div className="enemy e2"></div>
+            <div className="enemy e3"></div>
+            <div className="player-ship"></div>
+          </div>
+        )}
         {paused && (
-          <div className="crt-content" style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}>
+          <div
+            className="crt-content"
+            style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}
+          >
             <div>
               <div className="pixel neon-yellow" style={{ fontSize: 22 }}>
                 EN PAUSA
               </div>
-              <div className="mono" style={{ fontSize: 11, color: "var(--ink-dim)", marginTop: 10, letterSpacing: "0.16em" }}>
+              <div
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  color: "var(--ink-dim)",
+                  marginTop: 10,
+                  letterSpacing: "0.16em",
+                }}
+              >
                 PULSA REANUDAR PARA CONTINUAR
               </div>
             </div>
