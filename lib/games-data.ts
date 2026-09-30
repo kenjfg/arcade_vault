@@ -17,6 +17,17 @@ export interface Game {
 
 export const GAMES: Game[] = [
   {
+    id: "asteroids",
+    title: "ASTEROIDS",
+    short: "Esquiva y destruye rocas en un espacio sin bordes.",
+    long: "Pilota una nave vectorial en un campo de asteroides donde el espacio se enrosca sobre sí mismo. Cada roca que revientas se parte en fragmentos más rápidos. Atrapa el núcleo verde para disparar en abanico y limpia el sector antes de que llegue la siguiente oleada.",
+    cat: "SHOOTER",
+    cover: "cover-rocas",
+    color: "cyan",
+    best: 0,
+    plays: "0",
+  },
+  {
     id: "bloque-buster",
     title: "BLOQUE BUSTER",
     short: "Rebota la pelota y destruye muros de neón.",
