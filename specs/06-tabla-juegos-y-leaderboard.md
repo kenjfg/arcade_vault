@@ -187,34 +187,34 @@ Archivos:
 
 ## Acceptance criteria
 
-- [ ] `supabase/migrations/` contiene la migración, y `npx supabase migration list` la muestra aplicada en local y en remoto.
-- [ ] En Supabase, `categories` tiene 4 filas (ARCADE, PUZZLE, SHOOTER, VERSUS por `sort_order`), y cada juego conserva la categoría que tenía en `GAMES`.
-- [ ] `categories`, `games` y `scores` tienen `id bigint` autoincremental como PK, y ninguna tiene una PK de texto. `categories.code` y `games.code` son únicos.
-- [ ] En Supabase, `games` tiene 9 filas, solo `asteroids` con `playable = true`, y `scores` empieza vacía.
-- [ ] RLS está activado en `categories`, `games` y `scores`, y los advisors de seguridad no muestran avisos sobre estas tablas o vistas.
-- [ ] Con la publishable key, un `insert` en `categories` o `games`, un `update` o `delete` en `scores` y un `insert` en `scores` con el `game_id` de `caida` fallan.
-- [ ] `/juegos` y la Home muestran los mismos 9 juegos, con `ASTEROIDS` primero, y los filtros y la búsqueda funcionan igual que antes.
-- [ ] Los chips de la biblioteca son TODOS, ARCADE, PUZZLE, SHOOTER y VERSUS, y cada tarjeta muestra el nombre de su categoría.
-- [ ] Tras insertar una categoría nueva con SQL (y borrarla después), aparece como chip en `/juegos` sin cambiar código, y al pulsarla la lista queda vacía.
-- [ ] Borrar una categoría que tiene juegos falla por la FK.
-- [ ] `/juegos/asteroids`, `/juegos/asteroids/jugar` y `/salon-de-la-fama?juego=asteroids` funcionan con el `code`, y `/juegos/1` y `/juegos/no-existe` dan 404.
-- [ ] Con `scores` vacía, el detalle de un juego muestra Partidas 0, Mejor global 0 y "SÉ EL PRIMERO EN ENTRAR AL SALÓN".
-- [ ] Tras guardar una partida de Asteroids, el detalle de `asteroids` muestra Partidas 1, Mejor global igual a esa puntuación y una fila con las iniciales, la puntuación y la fecha de hoy.
-- [ ] Guardar dos puntuaciones con el mismo nombre deja una sola fila de ese nombre en el ranking, con la mayor, y Partidas sube a 2.
-- [ ] Con dos nombres empatados, aparece primero el que guardó antes.
-- [ ] La tarjeta de ASTEROIDS en `/juegos` muestra el mismo mejor que el detalle.
-- [ ] `/salon-de-la-fama?juego=asteroids` muestra el podio y la tabla reales. Con 1 o 2 puntuaciones, el podio solo muestra esas posiciones y no hay errores en la consola.
-- [ ] En el Salón, cambiar de pestaña cambia `?juego=` en la URL, y recargar mantiene la pestaña.
-- [ ] `/salon-de-la-fama?juego=no-existe` y `/salon-de-la-fama` muestran ASTEROIDS.
-- [ ] Con sesión iniciada como un nombre que tiene puntuación, el Salón muestra la fila TÚ con su posición y puntuación reales. Con un nombre sin puntuación, o sin sesión, no hay fila TÚ.
-- [ ] En el modal, el botón muestra "GUARDANDO…" mientras se guarda y después "▸ PUNTUACIÓN GUARDADA_".
-- [ ] Guardar con iniciales vacías o solo espacios muestra "ERROR AL GUARDAR" y no inserta nada.
-- [ ] En un juego mock (p. ej. CAÍDA), el modal de fin muestra "ESTE JUEGO AÚN NO GUARDA PUNTUACIONES" y no tiene campo ni botón de guardar.
-- [ ] Con `NEXT_PUBLIC_SUPABASE_URL` apuntando a una URL que no responde, `/juegos` muestra `app/error.tsx` con REINTENTAR, sin pantalla en blanco.
-- [ ] Si la vista `leaderboard` no está disponible (p. ej. renombrada temporalmente), el detalle muestra "RANKING NO DISPONIBLE" y el resto de la página se ve.
-- [ ] `av_scores`, `saveScore`, `getScores`, `GAMES`, `CATS`, `GameCategory`, `PLAYERS` y `seededScores` no aparecen en `app/`, `components/` ni `lib/`.
-- [ ] Asteroids se sigue jugando igual que en el SPEC 05 (pausa, auto-pausa, FIN, JUGAR DE NUEVO).
-- [ ] `npx tsc --noEmit`, `npm run lint` y `npm run build` pasan sin errores.
+- [x] `supabase/migrations/` contiene la migración, y `npx supabase migration list` la muestra aplicada en local y en remoto.
+- [x] En Supabase, `categories` tiene 4 filas (ARCADE, PUZZLE, SHOOTER, VERSUS por `sort_order`), y cada juego conserva la categoría que tenía en `GAMES`.
+- [x] `categories`, `games` y `scores` tienen `id bigint` autoincremental como PK, y ninguna tiene una PK de texto. `categories.code` y `games.code` son únicos.
+- [x] En Supabase, `games` tiene 9 filas, solo `asteroids` con `playable = true`, y `scores` empieza vacía.
+- [x] RLS está activado en `categories`, `games` y `scores`, y los advisors de seguridad no muestran avisos sobre estas tablas o vistas.
+- [x] Con la publishable key, un `insert` en `categories` o `games`, un `update` o `delete` en `scores` y un `insert` en `scores` con el `game_id` de `caida` fallan.
+- [x] `/juegos` y la Home muestran los mismos 9 juegos, con `ASTEROIDS` primero, y los filtros y la búsqueda funcionan igual que antes.
+- [x] Los chips de la biblioteca son TODOS, ARCADE, PUZZLE, SHOOTER y VERSUS, y cada tarjeta muestra el nombre de su categoría.
+- [x] Tras insertar una categoría nueva con SQL (y borrarla después), aparece como chip en `/juegos` sin cambiar código, y al pulsarla la lista queda vacía.
+- [x] Borrar una categoría que tiene juegos falla por la FK.
+- [x] `/juegos/asteroids`, `/juegos/asteroids/jugar` y `/salon-de-la-fama?juego=asteroids` funcionan con el `code`, y `/juegos/1` y `/juegos/no-existe` dan 404.
+- [x] Con `scores` vacía, el detalle de un juego muestra Partidas 0, Mejor global 0 y "SÉ EL PRIMERO EN ENTRAR AL SALÓN".
+- [x] Tras guardar una partida de Asteroids, el detalle de `asteroids` muestra Partidas 1, Mejor global igual a esa puntuación y una fila con las iniciales, la puntuación y la fecha de hoy.
+- [x] Guardar dos puntuaciones con el mismo nombre deja una sola fila de ese nombre en el ranking, con la mayor, y Partidas sube a 2.
+- [x] Con dos nombres empatados, aparece primero el que guardó antes.
+- [x] La tarjeta de ASTEROIDS en `/juegos` muestra el mismo mejor que el detalle.
+- [x] `/salon-de-la-fama?juego=asteroids` muestra el podio y la tabla reales. Con 1 o 2 puntuaciones, el podio solo muestra esas posiciones y no hay errores en la consola.
+- [x] En el Salón, cambiar de pestaña cambia `?juego=` en la URL, y recargar mantiene la pestaña.
+- [x] `/salon-de-la-fama?juego=no-existe` y `/salon-de-la-fama` muestran ASTEROIDS.
+- [x] Con sesión iniciada como un nombre que tiene puntuación, el Salón muestra la fila TÚ con su posición y puntuación reales. Con un nombre sin puntuación, o sin sesión, no hay fila TÚ.
+- [x] En el modal, el botón muestra "GUARDANDO…" mientras se guarda y después "▸ PUNTUACIÓN GUARDADA_".
+- [x] Guardar con iniciales vacías o solo espacios muestra "ERROR AL GUARDAR" y no inserta nada.
+- [x] En un juego mock (p. ej. CAÍDA), el modal de fin muestra "ESTE JUEGO AÚN NO GUARDA PUNTUACIONES" y no tiene campo ni botón de guardar.
+- [x] Con `NEXT_PUBLIC_SUPABASE_URL` apuntando a una URL que no responde, `/juegos` muestra `app/error.tsx` con REINTENTAR, sin pantalla en blanco.
+- [x] Si la vista `leaderboard` no está disponible (p. ej. renombrada temporalmente), el detalle muestra "RANKING NO DISPONIBLE" y el resto de la página se ve.
+- [x] `av_scores`, `saveScore`, `getScores`, `GAMES`, `CATS`, `GameCategory`, `PLAYERS` y `seededScores` no aparecen en `app/`, `components/` ni `lib/`.
+- [x] Asteroids se sigue jugando igual que en el SPEC 05 (pausa, auto-pausa, FIN, JUGAR DE NUEVO).
+- [x] `npx tsc --noEmit`, `npm run lint` y `npm run build` pasan sin errores.
 
 ## Decisions
 
