@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Leaderboard } from "@/components/leaderboard";
-import { GAMES, seededScores } from "@/lib/games-data";
+import { getGame, getLeaderboard } from "@/lib/games-db";
 
 export default async function GameDetailPage(props: PageProps<"/juegos/[id]">) {
   const { id } = await props.params;
-  const game = GAMES.find((g) => g.id === id);
-  if (!game) notFound();
+  // The [id] segment carries the game's code (e.g. "asteroids"), not its numeric id.
+  const found = await getGame(id);
+  if (!found) notFound();
+  const { game, statsError } = found;
 
-  const scores = seededScores(id.length * 17 + 3, 10);
+  const leaderboard = await getLeaderboard(game.id, 10);
+  const scores = "rows" in leaderboard && !statsError ? leaderboard.rows : null;
 
   return (
     <div className="av-detail fade-in">
@@ -18,7 +21,7 @@ export default async function GameDetailPage(props: PageProps<"/juegos/[id]">) {
         </div>
         <div style={{ marginTop: 20 }} className="detail-info">
           <div className="detail-tags">
-            <span>{game.cat}</span>
+            <span>{game.category.name}</span>
             <span>1 JUGADOR</span>
             <span>TECLADO / TÁCTIL</span>
             <span>RETRO 1985</span>
@@ -28,12 +31,12 @@ export default async function GameDetailPage(props: PageProps<"/juegos/[id]">) {
           <div className="stat-strip">
             <div>
               <div className="l">Partidas</div>
-              <div className="v">{game.plays}</div>
+              <div className="v">{statsError ? "—" : game.plays.toLocaleString("es-ES")}</div>
             </div>
             <div>
               <div className="l">Mejor global</div>
               <div className="v" style={{ color: "var(--magenta)", textShadow: "0 0 6px rgba(255,0,110,0.5)" }}>
-                {game.best.toLocaleString("es-ES")}
+                {statsError ? "—" : game.best.toLocaleString("es-ES")}
               </div>
             </div>
             <div>
@@ -44,7 +47,7 @@ export default async function GameDetailPage(props: PageProps<"/juegos/[id]">) {
             </div>
           </div>
           <div className="detail-actions">
-            <Link href={`/juegos/${game.id}/jugar`} className="btn xl pulse">
+            <Link href={`/juegos/${game.code}/jugar`} className="btn xl pulse">
               ▶ JUGAR AHORA
             </Link>
             <Link href="/juegos" className="btn ghost lg">

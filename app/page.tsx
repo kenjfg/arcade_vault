@@ -3,7 +3,8 @@ import { FeatureIcon, type FeatureIconKind } from "@/components/feature-icon";
 import { FloatingSilhouettes } from "@/components/floating-silhouettes";
 import { MiniCard } from "@/components/mini-card";
 import { RevealOnScroll } from "@/components/reveal-on-scroll";
-import { GAMES, type GameColor } from "@/lib/games-data";
+import type { GameColor } from "@/lib/games-data";
+import { getGames } from "@/lib/games-db";
 
 const FEATURES: { i: FeatureIconKind; t: string; d: string; c: GameColor }[] = [
   { i: "GAMEPAD", t: "JUEGOS CLÁSICOS", d: "Arkanoid, Tetris, Snake y muchos más. Los mejores arcades de todos los tiempos en un solo lugar.", c: "cyan" },
@@ -36,7 +37,9 @@ const TOP_PLAYERS = [
   { r: 5, p: "GLITCHA", s: 138900 },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const { games } = await getGames();
+
   return (
     <div className="home fade-in">
       <RevealOnScroll />
@@ -99,7 +102,7 @@ export default function Home() {
           <div className="section-rule"></div>
         </div>
         <div className="mini-rail">
-          {GAMES.slice(0, 6).map((g) => (
+          {games.slice(0, 6).map((g) => (
             <MiniCard key={g.id} game={g} />
           ))}
         </div>
