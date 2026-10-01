@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
-import type { Game } from "@/lib/games-data";
+import type { GameWithStats } from "@/lib/games-data";
 
 interface GameCardProps {
-  game: Game;
-  onSelect: (game: Game) => void;
+  game: GameWithStats;
+  onSelect: (game: GameWithStats) => void;
 }
 
 export function GameCard({ game, onSelect }: GameCardProps) {
@@ -27,10 +27,16 @@ export function GameCard({ game, onSelect }: GameCardProps) {
   };
 
   return (
-    <div ref={tiltRef} className="card" onMouseMove={onMove} onMouseLeave={onLeave} onClick={() => onSelect(game)}>
+    <div
+      ref={tiltRef}
+      className="card"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      onClick={() => onSelect(game)}
+    >
       <div className="cover">
         <div className={"cover-bg " + game.cover}></div>
-        <div className="label">{game.cat}</div>
+        <div className="label">{game.category.name}</div>
       </div>
       <div className="meta">
         <div className="title">{game.title}</div>
@@ -41,7 +47,14 @@ export function GameCard({ game, onSelect }: GameCardProps) {
             <b>{game.best.toLocaleString("es-ES")}</b>
           </div>
           <button
-            className={"btn " + (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")}
+            className={
+              "btn " +
+              (game.color === "magenta"
+                ? "magenta"
+                : game.color === "yellow"
+                  ? "yellow"
+                  : "")
+            }
             onClick={(e) => {
               e.stopPropagation();
               onSelect(game);

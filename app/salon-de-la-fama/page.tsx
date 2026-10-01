@@ -1,20 +1,20 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import Link from "next/link";
-import { HallPodium } from "@/components/hall-podium";
-import { HallTable } from "@/components/hall-table";
-import { GAMES, seededScores } from "@/lib/games-data";
-import { useAuth } from "@/lib/auth-context";
+import { notFound } from "next/navigation";
+import { HallOfFame } from "@/components/hall-of-fame";
+import { getGames, getLeaderboard } from "@/lib/games-db";
 
-export default function HallOfFamePage() {
-  const { user } = useAuth();
-  const [tab, setTab] = useState(GAMES[0].id);
-  const rows = useMemo(() => seededScores(tab.length * 23 + 7, 12), [tab]);
-  const game = GAMES.find((g) => g.id === tab);
+export default async function HallOfFamePage(
+  props: PageProps<"/salon-de-la-fama">,
+) {
+  const { juego } = await props.searchParams;
+  const { games } = await getGames();
 
-  const youRank = Math.floor(8 + (tab.length % 4));
-  const youScore = (rows[5]?.score ?? 10399) - 2400;
+  // Without ?juego= or with an unknown code, fall back to the first game by sort_order.
+  const game = games.find((g) => g.code === juego) ?? games[0];
+  if (!game) notFound();
+
+  const leaderboard = await getLeaderboard(game.id, 12);
+  const rows = "rows" in leaderboard ? leaderboard.rows : null;
 
   return (
     <div className="av-hall fade-in">
@@ -25,20 +25,10 @@ export default function HallOfFamePage() {
         </p>
       </div>
 
-      <div className="hall-tabs">
-        {GAMES.map((g) => (
-          <button key={g.id} className={"chip" + (tab === g.id ? " active" : "")} onClick={() => setTab(g.id)}>
-            {g.title}
-          </button>
-        ))}
-      </div>
-
-      <HallPodium rows={rows} />
-
-      <HallTable
+      <HallOfFame
+        games={games.map(({ id, code, title }) => ({ id, code, title }))}
+        game={{ id: game.id, code: game.code, title: game.title }}
         rows={rows}
-        gameTitle={game ? game.title : ""}
-        you={user ? { rank: youRank, name: user.name, score: youScore || 9999, date: "11/05/2026" } : null}
       />
 
       <div style={{ textAlign: "center", marginTop: 32 }}>
