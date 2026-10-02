@@ -8,10 +8,10 @@ import {
   useState,
 } from "react";
 import {
-  createAsteroidsGame,
-  type AsteroidsGame,
-  type AsteroidsStats,
-} from "@/lib/games/asteroids/engine";
+  createTetrisGame,
+  type TetrisGame,
+  type TetrisStats,
+} from "@/lib/games/tetris/engine";
 import type { GameCanvasProps } from "@/components/games/registry";
 
 const MAX_DPR = 2;
@@ -19,7 +19,7 @@ const MAX_DPR = 2;
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
 
-export function AsteroidsCanvas({
+export function TetrisCanvas({
   ref,
   paused,
   over,
@@ -29,10 +29,10 @@ export function AsteroidsCanvas({
   onAutoPause,
 }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const gameRef = useRef<AsteroidsGame | null>(null);
+  const gameRef = useRef<TetrisGame | null>(null);
   const [started, setStarted] = useState(false);
 
-  const handleStats = useEffectEvent((stats: AsteroidsStats) => onStats(stats));
+  const handleStats = useEffectEvent((stats: TetrisStats) => onStats(stats));
   const handleGameOver = useEffectEvent((finalScore: number) =>
     onGameOver(finalScore),
   );
@@ -65,7 +65,9 @@ export function AsteroidsCanvas({
     const observer = new ResizeObserver(fit);
     observer.observe(canvas);
 
-    const game = createAsteroidsGame(canvas, {
+    // Created before the start listener below registers, so the engine sees
+    // the starting Space while still in ready and ignores it (no hard drop).
+    const game = createTetrisGame(canvas, {
       onStats: (stats) => handleStats(stats),
       onGameOver: (finalScore) => handleGameOver(finalScore),
     });
@@ -136,8 +138,8 @@ export function AsteroidsCanvas({
       {!started && (
         <div className="crt-content">
           <div>
-            <div className="pixel neon-cyan" style={{ fontSize: 28 }}>
-              ASTEROIDS
+            <div className="pixel neon-magenta" style={{ fontSize: 28 }}>
+              TETRIS
             </div>
             <div
               className="mono"
