@@ -6,13 +6,13 @@ import { PlayerHud } from "@/components/player-hud";
 import { CrtScreen } from "@/components/crt-screen";
 import { GameOverModal, type SaveState } from "@/components/game-over-modal";
 import {
-  AsteroidsCanvas,
-  type AsteroidsCanvasHandle,
-} from "@/components/games/asteroids-canvas";
+  getGameEntry,
+  type GameCanvasHandle,
+  type GameStats,
+} from "@/components/games/registry";
 import { submitScore } from "@/app/juegos/[id]/jugar/actions";
 import type { Game } from "@/lib/games-data";
 import { useAuth } from "@/lib/auth-context";
-import type { AsteroidsStats } from "@/lib/games/asteroids/engine";
 
 interface GamePlayerProps {
   game: Game;
@@ -22,42 +22,43 @@ export function GamePlayer({ game }: GamePlayerProps) {
   const router = useRouter();
   const { user } = useAuth();
 
-  // Only Asteroids is a real game; the other entries keep the simulated score.
-  // Detected by code, not by the numeric id, which depends on the database.
-  const isAsteroids = game.code === "asteroids";
+  // A real game must be in the registry and have `playable` in the database;
+  // anything else keeps the simulated score and cannot save it.
+  // Looked up by code, not by the numeric id, which depends on the database.
+  const entry = game.playable ? getGameEntry(game.code) : undefined;
+  const GameCanvas = entry?.Component;
+  const isReal = entry !== undefined;
 
-  const asteroidsRef = useRef<AsteroidsCanvasHandle>(null);
+  const gameRef = useRef<GameCanvasHandle>(null);
   const [simScore, setSimScore] = useState(0);
-  const [asteroidsStats, setAsteroidsStats] = useState<AsteroidsStats>({
-    score: 0,
-    lives: 3,
-    level: 1,
-  });
+  const [gameStats, setGameStats] = useState<GameStats>(
+    entry?.initialStats ?? { score: 0, lives: 3, level: 1 },
+  );
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [nameOverride, setNameOverride] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
 
   useEffect(() => {
-    if (isAsteroids || over || paused) return;
+    if (isReal || over || paused) return;
     const t = setInterval(
       () => setSimScore((s) => s + Math.floor(10 + Math.random() * 90)),
       220,
     );
     return () => clearInterval(t);
-  }, [isAsteroids, over, paused]);
+  }, [isReal, over, paused]);
 
-  const { score, lives, level } = isAsteroids
-    ? asteroidsStats
+  const { score, lives, level } = isReal
+    ? gameStats
     : { score: simScore, lives: 3, level: Math.floor(simScore / 2500) + 1 };
   const name = nameOverride ?? (user ? user.name : "INVITADO");
 
   const endGame = () => {
-    asteroidsRef.current?.end();
+    gameRef.current?.end();
     setOver(true);
   };
   const restart = () => {
-    asteroidsRef.current?.restart();
+    gameRef.current?.restart();
     setSimScore(0);
     setPaused(false);
     setOver(false);
@@ -84,12 +85,12 @@ export function GamePlayer({ game }: GamePlayerProps) {
       />
 
       <CrtScreen title={game.title} paused={paused}>
-        {isAsteroids ? (
-          <AsteroidsCanvas
-            ref={asteroidsRef}
+        {GameCanvas ? (
+          <GameCanvas
+            ref={gameRef}
             paused={paused}
             over={over}
-            onStats={setAsteroidsStats}
+            onStats={setGameStats}
             onGameOver={() => setOver(true)}
             onTogglePause={() => setPaused((p) => !p)}
             onAutoPause={() => setPaused(true)}
@@ -101,7 +102,7 @@ export function GamePlayer({ game }: GamePlayerProps) {
         <GameOverModal
           score={score}
           name={name}
-          playable={game.playable}
+          playable={isReal}
           saveState={saveState}
           onNameChange={(value) =>
             setNameOverride(value.toUpperCase().slice(0, 10))

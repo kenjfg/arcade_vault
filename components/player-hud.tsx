@@ -1,7 +1,7 @@
 interface PlayerHudProps {
   playerName: string;
   score: number;
-  lives: number;
+  lives: number | null; // null: the game has no lives and VIDAS is hidden
   level: number;
   paused: boolean;
   onTogglePause: () => void;
@@ -9,7 +9,16 @@ interface PlayerHudProps {
   onExit: () => void;
 }
 
-export function PlayerHud({ playerName, score, lives, level, paused, onTogglePause, onEnd, onExit }: PlayerHudProps) {
+export function PlayerHud({
+  playerName,
+  score,
+  lives,
+  level,
+  paused,
+  onTogglePause,
+  onEnd,
+  onExit,
+}: PlayerHudProps) {
   return (
     <div className="player-hud">
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
@@ -23,10 +32,12 @@ export function PlayerHud({ playerName, score, lives, level, paused, onTogglePau
           <div className="l">Puntuación</div>
           <div className="v">{score.toLocaleString("es-ES")}</div>
         </div>
-        <div className="hud-stat lives">
-          <div className="l">Vidas</div>
-          <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
-        </div>
+        {lives !== null && (
+          <div className="hud-stat lives">
+            <div className="l">Vidas</div>
+            <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
+          </div>
+        )}
         <div className="hud-stat level">
           <div className="l">Nivel</div>
           <div className="v">{String(level).padStart(2, "0")}</div>
