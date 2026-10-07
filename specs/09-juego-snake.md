@@ -153,37 +153,37 @@ La serpiente y la fruta son arrays de celdas y funciones puras, así que no hay 
 
 ## Acceptance criteria
 
-- [ ] `supabase/migrations/` contiene `convert_serpentina_to_snake`, y `npx supabase migration list` la muestra aplicada en local y en remoto.
-- [ ] En `games` ya no existe `serpentina`. La fila `snake` tiene `title = 'SNAKE'`, `playable = true`, categoría `arcade`, `cover-snake`, `green`, `sort_order` 4, el `short_desc` de SERPENTINA y el `long_desc` nuevo. Las demás filas no cambian.
-- [ ] Los advisors de seguridad no muestran avisos nuevos.
-- [ ] SNAKE aparece en cuarta posición en `/juegos` y en la Home, y como pestaña del Salón de la Fama, con la portada `cover-snake`.
-- [ ] `/juegos/serpentina` da 404.
-- [ ] `/juegos/snake/jugar` muestra el tablero, la serpiente de 3 celdas en el centro mirando a la derecha y una fruta, bajo el texto "PULSA ESPACIO PARA EMPEZAR". Nada se mueve hasta pulsar Espacio.
-- [ ] Al pulsar Espacio, la serpiente avanza sola hacia la derecha una celda por tick.
-- [ ] Las flechas y `W` `A` `S` `D` giran la serpiente. Pulsar la dirección opuesta a la actual no hace nada.
-- [ ] Pulsar dos giros seguidos muy rápido (p. ej. `↑` y `←` yendo a la derecha) hace los dos giros en ticks consecutivos, sin que la serpiente se muerda.
-- [ ] La fruta es siempre uno de los 22 sprites pixel art de `fruits.png`, nítido y centrado en su celda, y nunca aparece encima de la serpiente.
-- [ ] Comer una fruta en el nivel 1 suma exactamente 10 puntos y alarga la serpiente 1 celda. En el nivel N suma exactamente 10 × N.
-- [ ] Al comer la quinta fruta, el NIVEL del HUD pasa a 02 y la serpiente va más rápido. Esa quinta fruta todavía suma 10.
-- [ ] Salir del tablero por cualquier lado termina la partida.
-- [ ] Chocar con el propio cuerpo termina la partida. Entrar en la celda que deja la cola en ese mismo tick no la termina.
-- [ ] Al morir, la escena se ve congelada 1 s y después se abre "FIN DEL JUEGO" con la puntuación final.
-- [ ] El HUD muestra la puntuación y el nivel del motor y no muestra la casilla VIDAS.
-- [ ] El canvas no dibuja puntuación, nivel, vidas, PAUSA, GAME OVER ni texto de victoria.
-- [ ] PAUSA, `P` y `Esc` congelan el juego y muestran "EN PAUSA". REANUDAR, `P` y `Esc` lo reanudan sin que la serpiente avance de golpe. Un giro pulsado durante la pausa no se aplica al reanudar.
-- [ ] Cambiar de pestaña o de ventana durante una partida la deja en EN PAUSA.
-- [ ] FIN a mitad de partida detiene el juego y abre el modal con la puntuación actual.
-- [ ] GUARDAR PUNTUACIÓN inserta una fila en `scores` para `snake`. Después, `/juegos/snake` muestra Partidas, Mejor global y el jugador en el ranking, y `/salon-de-la-fama?juego=snake` lo muestra.
-- [ ] JUGAR DE NUEVO deja la puntuación en 0, el nivel en 01 y la serpiente inicial, y vuelve a mostrar "PULSA ESPACIO PARA EMPEZAR".
-- [ ] Durante la partida, las flechas y Espacio no hacen scroll de la página. En el modal, el campo de iniciales acepta espacios, flechas, `W` `A` `S` `D` y cualquier otra tecla.
-- [ ] Tras salir con SALIR o VOLVER AL VAULT, las teclas no hacen nada en otras pantallas y no hay errores en la consola.
-- [ ] Entrar y salir del reproductor varias veces no acelera la serpiente.
-- [ ] Si `/games/snake/fruits.png` no carga (p. ej. bloqueado en DevTools), la fruta se ve como un círculo magenta y el juego sigue funcionando.
-- [ ] El canvas se ve nítido con `devicePixelRatio` 2 y ocupa todo el `.crt-screen`, también a 375 px de ancho.
-- [ ] Asteroids, Tetris y Arkanoid se siguen jugando exactamente igual que en los SPEC 05, 07 y 08.
-- [ ] En un mock (p. ej. GLOTÓN) se ve la simulación y el modal "ESTE JUEGO AÚN NO GUARDA PUNTUACIONES".
-- [ ] `sprites.js` no se importa ni se copia en `app/`, `components/`, `lib/` ni `public/`. De `references/` solo se copia `fruits.png`.
-- [ ] `npx tsc --noEmit`, `npm run lint` y `npm run build` pasan sin errores.
+- [x] `supabase/migrations/` contiene `convert_serpentina_to_snake`, y `npx supabase migration list` la muestra aplicada en local y en remoto.
+- [x] En `games` ya no existe `serpentina`. La fila `snake` tiene `title = 'SNAKE'`, `playable = true`, categoría `arcade`, `cover-snake`, `green`, `sort_order` 4, el `short_desc` de SERPENTINA y el `long_desc` nuevo. Las demás filas no cambian.
+- [x] Los advisors de seguridad no muestran avisos nuevos.
+- [x] SNAKE aparece en cuarta posición en `/juegos` y en la Home, y como pestaña del Salón de la Fama, con la portada `cover-snake`.
+- [x] `/juegos/serpentina` da 404.
+- [x] `/juegos/snake/jugar` muestra el tablero, la serpiente de 3 celdas en el centro mirando a la derecha y una fruta, bajo el texto "PULSA ESPACIO PARA EMPEZAR". Nada se mueve hasta pulsar Espacio.
+- [x] Al pulsar Espacio, la serpiente avanza sola hacia la derecha una celda por tick.
+- [x] Las flechas y `W` `A` `S` `D` giran la serpiente. Pulsar la dirección opuesta a la actual no hace nada.
+- [x] Pulsar dos giros seguidos muy rápido (p. ej. `↑` y `←` yendo a la derecha) hace los dos giros en ticks consecutivos, sin que la serpiente se muerda.
+- [x] La fruta es siempre uno de los 22 sprites pixel art de `fruits.png`, nítido y centrado en su celda, y nunca aparece encima de la serpiente.
+- [x] Comer una fruta en el nivel 1 suma exactamente 10 puntos y alarga la serpiente 1 celda. En el nivel N suma exactamente 10 × N.
+- [x] Al comer la quinta fruta, el NIVEL del HUD pasa a 02 y la serpiente va más rápido. Esa quinta fruta todavía suma 10.
+- [x] Salir del tablero por cualquier lado termina la partida.
+- [x] Chocar con el propio cuerpo termina la partida. Entrar en la celda que deja la cola en ese mismo tick no la termina.
+- [x] Al morir, la escena se ve congelada 1 s y después se abre "FIN DEL JUEGO" con la puntuación final.
+- [x] El HUD muestra la puntuación y el nivel del motor y no muestra la casilla VIDAS.
+- [x] El canvas no dibuja puntuación, nivel, vidas, PAUSA, GAME OVER ni texto de victoria.
+- [x] PAUSA, `P` y `Esc` congelan el juego y muestran "EN PAUSA". REANUDAR, `P` y `Esc` lo reanudan sin que la serpiente avance de golpe. Un giro pulsado durante la pausa no se aplica al reanudar.
+- [x] Cambiar de pestaña o de ventana durante una partida la deja en EN PAUSA.
+- [x] FIN a mitad de partida detiene el juego y abre el modal con la puntuación actual.
+- [x] GUARDAR PUNTUACIÓN inserta una fila en `scores` para `snake`. Después, `/juegos/snake` muestra Partidas, Mejor global y el jugador en el ranking, y `/salon-de-la-fama?juego=snake` lo muestra.
+- [x] JUGAR DE NUEVO deja la puntuación en 0, el nivel en 01 y la serpiente inicial, y vuelve a mostrar "PULSA ESPACIO PARA EMPEZAR".
+- [x] Durante la partida, las flechas y Espacio no hacen scroll de la página. En el modal, el campo de iniciales acepta espacios, flechas, `W` `A` `S` `D` y cualquier otra tecla.
+- [x] Tras salir con SALIR o VOLVER AL VAULT, las teclas no hacen nada en otras pantallas y no hay errores en la consola.
+- [x] Entrar y salir del reproductor varias veces no acelera la serpiente.
+- [x] Si `/games/snake/fruits.png` no carga (p. ej. bloqueado en DevTools), la fruta se ve como un círculo magenta y el juego sigue funcionando.
+- [x] El canvas se ve nítido con `devicePixelRatio` 2 y ocupa todo el `.crt-screen`, también a 375 px de ancho.
+- [x] Asteroids, Tetris y Arkanoid se siguen jugando exactamente igual que en los SPEC 05, 07 y 08.
+- [x] En un mock (p. ej. GLOTÓN) se ve la simulación y el modal "ESTE JUEGO AÚN NO GUARDA PUNTUACIONES".
+- [x] `sprites.js` no se importa ni se copia en `app/`, `components/`, `lib/` ni `public/`. De `references/` solo se copia `fruits.png`.
+- [x] `npx tsc --noEmit`, `npm run lint` y `npm run build` pasan sin errores.
 
 ## Decisions
 
