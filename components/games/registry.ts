@@ -1,4 +1,5 @@
 import type { ComponentType, Ref } from "react";
+import { ArkanoidCanvas } from "@/components/games/arkanoid-canvas";
 import { AsteroidsCanvas } from "@/components/games/asteroids-canvas";
 import { TetrisCanvas } from "@/components/games/tetris-canvas";
 
@@ -35,6 +36,10 @@ export interface GameRegistryEntry {
 export const GAME_REGISTRY: Record<string, GameRegistryEntry> = {
   asteroids: {
     Component: AsteroidsCanvas,
+    initialStats: { score: 0, lives: 3, level: 1 },
+  },
+  arkanoid: {
+    Component: ArkanoidCanvas,
     initialStats: { score: 0, lives: 3, level: 1 },
   },
   tetris: {
