@@ -39,6 +39,7 @@ The next spec is `10-...`.
 ## References (design and source material, not app code)
 
 - `references/templates/`: static Spanish prototype of the UI (CDN React 18 + in-browser Babel, one `styles.css`, mock data in `data.jsx`). `home-about/` holds the Home and About designs. Port the design from here rather than copying the CDN/Babel setup. Its styles were ported into `app/globals.css`.
+- `references/templates/implemented-games.md`: snapshot of the playable games (code, category, color, lives, controls, origin spec/migration, source files, plays/best/leader read from Supabase on 2026-10-08). Check it first for an overview of the real games; the database and the code win if they disagree. Update it when a game spec is implemented.
 - `references/started-games/NN-<game>/`: standalone vanilla-JS canvas games (`game.js`, `index.html`) used as the source when porting a game (Asteroids, Tetris, Arkanoid so far).
 - `references/source-assets/`: art for games designed from scratch (e.g. `snake-assets/` fruit sprites).
 - `demos/` is scratch and not part of the app.
