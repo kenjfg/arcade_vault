@@ -708,83 +708,209 @@
     background: var(--green); box-shadow: 0 0 6px var(--green);
   }
 
-  /* touch gamepad (SPEC 10): only on touch devices without hover */
+  /* touch gamepad "MK-II" (SPEC 10, look from SPEC 11): only on touch
+     devices without hover. PAUSA sits on its own row above the d-pad and A/B. */
   .av-gamepad {
+    --dpad: 156px; --dp: 50px; --ab: 74px;
+    position: relative;
     display: none;
-    align-items: center; justify-content: space-between; gap: 6px;
+    grid-template-columns: auto auto;
+    grid-template-areas: "pause pause" "dpad ab";
+    justify-content: space-between; align-items: center;
+    gap: 14px 18px;
     margin-top: 18px;
+    padding: 16px 22px 20px;
+    background: linear-gradient(180deg, #1c1c28 0%, #0c0c14 100%);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    box-shadow:
+      0 30px 80px -30px rgba(0,245,255,0.4),
+      0 0 0 1px rgba(255,255,255,0.02),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -2px 0 rgba(0,0,0,0.6);
     touch-action: none;
     user-select: none; -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
   }
+  .av-gamepad::before {
+    content: ""; position: absolute; inset: 4px;
+    border: 1px solid rgba(0,245,255,0.14);
+    border-radius: 18px; pointer-events: none;
+  }
+  .av-gamepad::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 8px 8px;
+    border-radius: inherit; pointer-events: none; opacity: 0.6;
+  }
   .av-hint-touch { display: none; }
   @media (hover: none) and (pointer: coarse) {
-    .av-gamepad { display: flex; }
+    .av-gamepad { display: grid; }
     .av-hint-keys { display: none; }
     .av-hint-touch { display: inline; }
   }
+
+  /* d-pad: four raised keys around a hub with a pulsing gem */
   .av-gamepad-dpad {
-    display: grid;
-    grid-template-columns: repeat(3, 44px);
-    grid-template-rows: repeat(3, 44px);
-    flex: 0 0 auto;
+    grid-area: dpad;
+    position: relative; z-index: 1;
+    width: var(--dpad); height: var(--dpad);
   }
-  .av-gamepad-dpad .up { grid-area: 1 / 2; }
-  .av-gamepad-dpad .left { grid-area: 2 / 1; }
-  .av-gamepad-dpad .right { grid-area: 2 / 3; }
-  .av-gamepad-dpad .down { grid-area: 3 / 2; }
-  .av-gamepad-btn {
+  .av-gamepad-dp, .av-gamepad-hub {
+    position: absolute;
+    width: var(--dp); height: var(--dp);
+  }
+  .av-gamepad-dp {
     display: flex; align-items: center; justify-content: center;
     padding: 0;
-    border: 1px solid var(--cyan);
-    background: var(--bg-2);
-    color: var(--cyan);
-    font-family: var(--pixel);
-    font-size: 14px;
+    background: linear-gradient(180deg, #1a1a25, #0a0a12);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    color: var(--ink-dim);
+    box-shadow:
+      0 4px 0 #050507,
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -2px 4px rgba(0,0,0,0.6);
     touch-action: none;
     cursor: pointer;
-    transition: background 80ms, box-shadow 80ms;
+    transition: transform 80ms, box-shadow 140ms, color 140ms, border-color 140ms, background 140ms;
   }
-  .av-gamepad-btn[data-pressed] {
-    background: rgba(0,245,255,0.22);
-    box-shadow: 0 0 14px rgba(0,245,255,0.6), inset 0 0 8px rgba(0,245,255,0.4);
+  .av-gamepad-dp svg { width: 22px; height: 22px; transition: filter 140ms; }
+  .av-gamepad-dp.up { top: 0; left: calc((var(--dpad) - var(--dp)) / 2); }
+  .av-gamepad-dp.down { bottom: 0; left: calc((var(--dpad) - var(--dp)) / 2); }
+  .av-gamepad-dp.left { left: 0; top: calc((var(--dpad) - var(--dp)) / 2); }
+  .av-gamepad-dp.right { right: 0; top: calc((var(--dpad) - var(--dp)) / 2); }
+  .av-gamepad-dp[data-pressed] {
+    transform: translateY(3px);
+    color: var(--cyan);
+    background: linear-gradient(180deg, #08161e, #030a0e);
+    border-color: var(--cyan);
+    box-shadow:
+      0 1px 0 #050507,
+      inset 0 0 16px rgba(0,245,255,0.45),
+      0 0 16px rgba(0,245,255,0.5);
   }
-  .av-gamepad-btn:disabled { opacity: 0.3; cursor: default; }
+  .av-gamepad-dp[data-pressed] svg {
+    filter: drop-shadow(0 0 6px var(--cyan)) drop-shadow(0 0 12px var(--cyan));
+  }
+  .av-gamepad-dp:disabled { opacity: 0.3; cursor: default; }
+  .av-gamepad-hub {
+    top: calc((var(--dpad) - var(--dp)) / 2);
+    left: calc((var(--dpad) - var(--dp)) / 2);
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #181822 0%, #08080d 80%);
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 6px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .av-gamepad-hub span {
+    width: 12px; height: 12px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan), inset 0 0 4px rgba(0,0,0,0.5);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    animation: av-gamepad-gem 2s ease-in-out infinite;
+  }
+  @keyframes av-gamepad-gem { 50% { opacity: 0.35; transform: scale(0.85); } }
+  @media (prefers-reduced-motion: reduce) {
+    .av-gamepad-hub span { animation: none; }
+  }
+
+  /* A/B: round neon buttons in a row, B (cyan) left and A (magenta) right */
   .av-gamepad-ab {
+    grid-area: ab;
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: auto auto;
+    gap: 22px; align-items: center;
+  }
+  .av-gamepad-btn-ab {
     position: relative;
-    flex: 0 0 auto;
-    width: 80px; height: 100px;
-  }
-  .av-gamepad-ab .av-gamepad-btn {
-    position: absolute;
-    width: 50px; height: 50px;
+    width: var(--ab); height: var(--ab);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    border: 2px solid currentColor;
     border-radius: 50%;
-    border-color: var(--magenta);
-    color: var(--magenta);
-    font-size: 12px;
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255,255,255,0.25), transparent 50%),
+      radial-gradient(circle at 50% 55%, var(--ab-mid), var(--ab-deep) 75%);
+    font-family: var(--pixel); font-size: 22px;
+    -webkit-text-fill-color: #fff;
+    text-shadow: 0 0 8px currentColor, 0 0 18px currentColor, 0 1px 0 rgba(0,0,0,0.6);
+    box-shadow:
+      0 6px 0 #050507,
+      0 0 22px var(--ab-glow),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -4px 8px rgba(0,0,0,0.4);
+    touch-action: none;
+    cursor: pointer;
+    transition: transform 80ms, box-shadow 140ms;
   }
-  .av-gamepad-ab .a { top: 0; right: 0; }
-  .av-gamepad-ab .b { bottom: 0; left: 0; }
-  .av-gamepad-ab .av-gamepad-btn[data-pressed] {
-    background: rgba(255,0,110,0.22);
-    box-shadow: 0 0 14px rgba(255,0,110,0.6), inset 0 0 8px rgba(255,0,110,0.4);
+  .av-gamepad-btn-ab.a { color: var(--magenta); --ab-mid: rgba(255,0,110,0.7); --ab-deep: rgba(110,0,40,0.95); --ab-glow: rgba(255,0,110,0.4); }
+  .av-gamepad-btn-ab.b { color: var(--cyan); --ab-mid: rgba(0,200,230,0.7); --ab-deep: rgba(0,50,70,0.95); --ab-glow: rgba(0,245,255,0.4); }
+  .av-gamepad-ring {
+    position: absolute; inset: -8px;
+    border: 1px dashed currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 140ms, transform 200ms;
   }
+  .av-gamepad-btn-ab[data-pressed] {
+    transform: translateY(4px) scale(0.97);
+    box-shadow: 0 1px 0 #050507, 0 0 36px var(--ab-glow), inset 0 0 18px rgba(0,0,0,0.5);
+  }
+  .av-gamepad-btn-ab[data-pressed] .av-gamepad-ring { opacity: 1; transform: scale(1.08); }
+  .av-gamepad-btn-ab:disabled {
+    opacity: 0.3; cursor: default;
+    box-shadow: 0 6px 0 #050507, inset 0 -4px 8px rgba(0,0,0,0.4);
+  }
+
+  /* PAUSA / REANUDAR: a raised yellow pill, like a START button */
   .av-gamepad-pause {
+    grid-area: pause; justify-self: center;
+    position: relative; z-index: 1;
     min-height: 44px;
-    padding: 0 6px;
+    padding: 0 18px;
+    background: linear-gradient(180deg, #1a1a25, #0a0a12);
     border: 1px solid var(--yellow);
-    background: transparent;
+    border-radius: 22px;
     color: var(--yellow);
     font-family: var(--pixel);
-    font-size: 6px;
-    letter-spacing: 0.04em;
+    font-size: 9px;
+    letter-spacing: 0.08em;
     white-space: nowrap;
+    text-shadow: 0 0 6px rgba(245,255,0,0.6);
+    box-shadow: 0 4px 0 #050507, 0 0 12px rgba(245,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
     touch-action: none;
     cursor: pointer;
   }
-  .av-gamepad-pause:disabled { opacity: 0.3; cursor: default; }
-  @media (min-width: 420px) { .av-gamepad-pause { font-size: 8px; padding: 0 10px; } }
+  .av-gamepad-pause:disabled { opacity: 0.3; cursor: default; box-shadow: 0 4px 0 #050507; }
+
+  /* narrow screens: smaller steps, and thinner player/CRT gutters so the
+     gamepad fits inside the CRT frame (SPEC 11) */
+  @media (max-width: 620px) {
+    .av-player { padding-left: 12px; padding-right: 12px; }
+    .crt { padding: 12px; }
+    .av-gamepad {
+      --dpad: 144px; --dp: 46px; --ab: 60px;
+      gap: 12px 14px;
+      padding: 12px 14px 16px;
+      border-radius: 16px;
+    }
+    .av-gamepad::before { border-radius: 12px; }
+    .av-gamepad-dp { border-radius: 8px; }
+    .av-gamepad-ab { gap: 16px; }
+    .av-gamepad-btn-ab { font-size: 18px; }
+  }
+  @media (max-width: 380px) {
+    .av-gamepad {
+      --dpad: 132px; --dp: 44px; --ab: 52px;
+      gap: 10px;
+      padding: 10px 10px 14px;
+    }
+    .av-gamepad-ab { gap: 12px; }
+    .av-gamepad-btn-ab { font-size: 16px; }
+    .av-gamepad-dp svg { width: 20px; height: 20px; }
+  }
 
   /* fake in-screen game */
   .game-arena {
