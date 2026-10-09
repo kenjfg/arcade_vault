@@ -5,9 +5,16 @@ interface CrtScreenProps {
   paused: boolean;
   // A real game to show instead of the decorative arena.
   children?: ReactNode;
+  // Rendered between the screen and the bottom bar (the touch gamepad).
+  controls?: ReactNode;
 }
 
-export function CrtScreen({ title, paused, children }: CrtScreenProps) {
+export function CrtScreen({
+  title,
+  paused,
+  children,
+  controls,
+}: CrtScreenProps) {
   return (
     <div className="crt">
       <div className="crt-screen">
@@ -44,6 +51,7 @@ export function CrtScreen({ title, paused, children }: CrtScreenProps) {
           </div>
         )}
       </div>
+      {controls}
       <div className="crt-bottom">
         <span className="led">SEÑAL OK</span>
         <span>{title} · CRT-83 · 60 HZ</span>

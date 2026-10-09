@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlayerHud } from "@/components/player-hud";
 import { CrtScreen } from "@/components/crt-screen";
+import { TouchGamepad } from "@/components/touch-gamepad";
 import { GameOverModal, type SaveState } from "@/components/game-over-modal";
 import {
   getGameEntry,
@@ -84,7 +85,20 @@ export function GamePlayer({ game }: GamePlayerProps) {
         onExit={() => router.push(`/juegos/${game.code}`)}
       />
 
-      <CrtScreen title={game.title} paused={paused}>
+      <CrtScreen
+        title={game.title}
+        paused={paused}
+        controls={
+          entry ? (
+            <TouchGamepad
+              controls={entry.touch}
+              paused={paused}
+              over={over}
+              onTogglePause={() => setPaused((p) => !p)}
+            />
+          ) : undefined
+        }
+      >
         {GameCanvas ? (
           <GameCanvas
             ref={gameRef}
