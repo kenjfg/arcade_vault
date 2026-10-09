@@ -27,9 +27,26 @@ export interface GameCanvasProps {
   onAutoPause: () => void; // tab hidden or window blurred
 }
 
+// One button of the touch gamepad: the KeyboardEvent.code it emits.
+export interface TouchButton {
+  code: string; // e.g. "ArrowLeft"
+  repeat?: boolean; // auto-repeat while held
+}
+
+// Touch gamepad mapping. Anything missing is shown dimmed and disabled.
+export interface TouchControls {
+  up?: TouchButton;
+  down?: TouchButton;
+  left?: TouchButton;
+  right?: TouchButton;
+  a?: TouchButton;
+  b?: TouchButton;
+}
+
 export interface GameRegistryEntry {
   Component: ComponentType<GameCanvasProps>;
   initialStats: GameStats;
+  touch: TouchControls; // required: every real game declares its gamepad
 }
 
 // Real games by `games.code`. A game is only mounted when it is listed here
@@ -38,18 +55,45 @@ export const GAME_REGISTRY: Record<string, GameRegistryEntry> = {
   asteroids: {
     Component: AsteroidsCanvas,
     initialStats: { score: 0, lives: 3, level: 1 },
+    touch: {
+      left: { code: "ArrowLeft" },
+      right: { code: "ArrowRight" },
+      up: { code: "ArrowUp" },
+      a: { code: "Space" },
+    },
   },
   arkanoid: {
     Component: ArkanoidCanvas,
     initialStats: { score: 0, lives: 3, level: 1 },
+    touch: {
+      left: { code: "ArrowLeft" },
+      right: { code: "ArrowRight" },
+      a: { code: "Space" },
+    },
   },
   snake: {
     Component: SnakeCanvas,
     initialStats: { score: 0, lives: null, level: 1 },
+    touch: {
+      left: { code: "ArrowLeft" },
+      right: { code: "ArrowRight" },
+      up: { code: "ArrowUp" },
+      down: { code: "ArrowDown" },
+      a: { code: "Space" },
+    },
   },
   tetris: {
     Component: TetrisCanvas,
     initialStats: { score: 0, lives: null, level: 1 },
+    // Tetris moves one cell per keydown, so held arrows auto-repeat.
+    touch: {
+      left: { code: "ArrowLeft", repeat: true },
+      right: { code: "ArrowRight", repeat: true },
+      down: { code: "ArrowDown", repeat: true },
+      up: { code: "ArrowUp" },
+      a: { code: "Space" },
+      b: { code: "KeyX" },
+    },
   },
 };
 

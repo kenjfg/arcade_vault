@@ -6,6 +6,7 @@ import {
   useImperativeHandle,
   useRef,
   useState,
+  type PointerEvent,
 } from "react";
 import {
   createSnakeGame,
@@ -99,6 +100,13 @@ export function SnakeCanvas({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [started, paused, over]);
 
+  // Touching the start screen also begins the game; a mouse click does not.
+  const startByTouch = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" || started || paused || over) return;
+    gameRef.current?.start();
+    setStarted(true);
+  };
+
   // P / Esc toggle the pause, and losing the tab or window focus pauses,
   // only while a game is in progress.
   useEffect(() => {
@@ -136,7 +144,7 @@ export function SnakeCanvas({
         }}
       />
       {!started && (
-        <div className="crt-content">
+        <div className="crt-content" onPointerDown={startByTouch}>
           <div>
             <div className="pixel neon-green" style={{ fontSize: 28 }}>
               SNAKE
@@ -150,7 +158,8 @@ export function SnakeCanvas({
                 letterSpacing: "0.16em",
               }}
             >
-              PULSA ESPACIO PARA EMPEZAR
+              <span className="av-hint-keys">PULSA ESPACIO PARA EMPEZAR</span>
+              <span className="av-hint-touch">TOCA PARA EMPEZAR</span>
             </div>
           </div>
         </div>

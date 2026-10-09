@@ -15,6 +15,8 @@ Juegos reales y jugables (`games.playable = true`) del catálogo de Supabase, en
 
 En todos los juegos, `P` o `Esc` pausan, y la partida se pausa sola al cambiar de pestaña o perder el foco de la ventana.
 
+En móviles y tablets táctiles (`(hover: none) and (pointer: coarse)`), bajo la pantalla aparece un gamepad virtual común (SPEC 10): cruceta, PAUSA, A y B. Emite las teclas del mapeo `touch` de cada juego en `components/games/registry.ts`, y los botones sin mapeo se ven atenuados. La pantalla de inicio dice "TOCA PARA EMPEZAR", y tocarla o pulsar A empieza la partida.
+
 ---
 
 ## 1. ASTEROIDS
@@ -25,6 +27,7 @@ En todos los juegos, `P` o `Esc` pausan, y la partida se pausa sola al cambiar d
 - **Descripción larga:** Pilota una nave vectorial en un campo de asteroides donde el espacio se enrosca sobre sí mismo. Cada roca que revientas se parte en fragmentos más rápidos. Atrapa el núcleo verde para disparar en abanico y limpia el sector antes de que llegue la siguiente oleada.
 - **Origen:** porte a TypeScript de `references/started-games/02-asteroids/` (SPEC 05). Fue el primer juego real y ya estaba en el catálogo inicial (SPEC 06).
 - **Controles:** `←` `→` girar · `↑` impulso · `Espacio` disparar.
+- **Táctil:** ◀ ▶ girar · ▲ impulso · A disparar (y empezar) · ▼ y B sin uso.
 - **HUD inicial:** puntuación 0 · vidas 3 · nivel 1.
 - **Código:** `lib/games/asteroids/` (`constants.ts`, `entities.ts`, `engine.ts`) · `components/games/asteroids-canvas.tsx`.
 
@@ -36,6 +39,7 @@ En todos los juegos, `P` o `Esc` pausan, y la partida se pausa sola al cambiar d
 - **Descripción larga:** Pilota una nave-paleta y rebota un núcleo de plasma para pulverizar muros de bloques cromáticos. Cada nivel reorganiza la grilla en patrones imposibles. ¿Hasta dónde llegará tu racha?
 - **Origen:** porte a TypeScript de `references/started-games/04-arkanoid/` (SPEC 08). Convirtió el mock BLOQUE BUSTER (migración `20261006233532_convert_bloque_buster_to_arkanoid.sql`).
 - **Controles:** `←` `→` mover la paleta.
+- **Táctil:** ◀ ▶ mover la paleta · A empezar · ▲ ▼ y B sin uso.
 - **HUD inicial:** puntuación 0 · vidas 3 · nivel 1.
 - **Código:** `lib/games/arkanoid/` (`constants.ts`, `levels.ts`, `engine.ts`) · `components/games/arkanoid-canvas.tsx`.
 
@@ -47,6 +51,7 @@ En todos los juegos, `P` o `Esc` pausan, y la partida se pausa sola al cambiar d
 - **Descripción larga:** Piezas geométricas descienden desde la oscuridad. Rótalas, encástralas y limpia líneas para sobrevivir. La velocidad aumenta sin piedad cada 10 líneas.
 - **Origen:** porte a TypeScript de `references/started-games/03-tetris/` (SPEC 07). Convirtió el mock CAÍDA (migración `20261002174355_convert_caida_to_tetris.sql`).
 - **Controles:** `←` `→` mover · `↑` o `X` rotar · `↓` bajar rápido · `Espacio` caída instantánea.
+- **Táctil:** ◀ ▶ mover y ▼ bajar (se repiten al mantener) · ▲ o B rotar · A caída instantánea (y empezar).
 - **HUD inicial:** puntuación 0 · sin vidas · nivel 1.
 - **Código:** `lib/games/tetris/` (`constants.ts`, `engine.ts`) · `components/games/tetris-canvas.tsx`.
 
@@ -58,6 +63,7 @@ En todos los juegos, `P` o `Esc` pausan, y la partida se pausa sola al cambiar d
 - **Descripción larga:** Una serpiente de luz recorre la grilla buscando fruta. Cada bocado la alarga y suma puntos, y cada cinco frutas acelera. Un choque contra la pared o contra tu propia cola y se acabó.
 - **Origen:** diseñado desde cero (SPEC 09) con las frutas de `references/source-assets/snake-assets/`. Convirtió el mock SERPENTINA (migración `20261007183028_convert_serpentina_to_snake.sql`).
 - **Controles:** `←` `↑` `→` `↓` cambiar de dirección.
+- **Táctil:** ◀ ▲ ▶ ▼ cambiar de dirección · A empezar · B sin uso.
 - **HUD inicial:** puntuación 0 · sin vidas · nivel 1.
 - **Código:** `lib/games/snake/` (`constants.ts`, `engine.ts`) · `components/games/snake-canvas.tsx`.
 
