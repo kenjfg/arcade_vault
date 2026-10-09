@@ -42,6 +42,7 @@ The next spec is `10-...`.
 - `references/templates/implemented-games.md`: snapshot of the playable games (code, category, color, lives, controls, origin spec/migration, source files, plays/best/leader read from Supabase on 2026-10-08). Check it first for an overview of the real games; the database and the code win if they disagree. Update it when a game spec is implemented.
 - `references/started-games/NN-<game>/`: standalone vanilla-JS canvas games (`game.js`, `index.html`) used as the source when porting a game (Asteroids, Tetris, Arkanoid so far).
 - `references/source-assets/`: art for games designed from scratch (e.g. `snake-assets/` fruit sprites).
+- `references/gamepad-assets/`: standalone "Gamepad MK-II" design (`gamepad.html`, `gamepad-neon.png`), the source of the touch gamepad's look (SPEC 11). Ported into `components/touch-gamepad.tsx` and the `av-gamepad*` classes; the app does not import it.
 - `demos/` is scratch and not part of the app.
 
 ## Commands
