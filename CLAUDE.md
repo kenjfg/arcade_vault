@@ -8,11 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Arcade Vault: an online games platform where players compete for the highest score. The UI is in Spanish (retro/neon "Portal Retro" style). The README (in Spanish) says the project follows spec-driven design (`/spec` and `/spec-impl`) using the skills from `Klerith/fernando-skills` (installed with `npx skills@latest add Klerith/fernando-skills`).
 
-Current state (specs 01–09, all `Implemented`):
+Current state (specs 01–11, all `Implemented`):
 
 - Screens ported from the prototype: Home `/`, library `/juegos`, game detail `/juegos/[id]`, player `/juegos/[id]/jugar`, auth `/iniciar-sesion`, Hall of Fame `/salon-de-la-fama`, About + contact form `/acerca`.
 - Catalog, categories and scores live in Supabase (SPEC 04/06).
 - Four real, playable games with leaderboard: Asteroids (05), Tetris (07), Arkanoid (08), Snake (09). The remaining catalog rows are mocks: the player runs a simulated score for them that cannot be saved.
+- Touch devices get a shared virtual gamepad under the CRT screen and can start a game by touching it (SPEC 10), styled as the neon "Gamepad MK-II" (SPEC 11). Apart from thinner gutters at ≤620px, the rest of the player layout is still desktop-first.
 - Contact form sends real email through Resend (SPEC 03).
 - Auth is still simulated: `lib/auth-context.tsx` keeps a `{ name }` user in `localStorage` (`av_user`). There is no Supabase Auth yet, so anyone can submit a score.
 - No tests.
@@ -24,6 +25,9 @@ Features are built through user-invoked skills (`disable-model-invocation: true`
 - `/spec <feature description>`: produces a spec, writes no code. It reads this file, asks clarifying questions in blocks of 3-5, then saves `specs/NN-slug.md` (next sequential number, kebab-case slug) with status `Draft`, and stops without offering to implement. It replies in the language of the prompt, and new specs must match the language and state wording of the existing ones (Spanish body, English header keys and status values, e.g. `> **Status:** Draft`).
 - `/spec-impl <NN-slug | NN | slug>`: implements a spec. It refuses unless the status means "Approved" (`Approved`/`Aprobado`, etc.); only the human changes Draft to Approved, and the agent must never do it. It then creates and switches to git branch `spec-NN-slug` (`AutoCreateBranch: true` in `specs/.spec-config.yml`; `false` would ask `[y/N]`), and warns first if the working tree is dirty.
 - `/game-spec <reference folder | game description>`: project-local skill in `.claude/skills/game-spec/` (not in `.agents/skills/` or `skills-lock.json`). A `/spec` specialized for adding a playable game with its leaderboard: ports a game from `references/started-games/` or designs one from scratch, asks about mock conversion, catalog row, HUD mapping and mechanics, and saves `specs/NN-juego-<code>.md` as `Draft`. Its `playbook.md` holds the pattern from SPEC 05/06 (engine contract, canvas component, game registry, migration, base acceptance criteria). Implement the result with `/spec-impl`.
+- `game-planner` subagent (`.claude/agents/game-planner.md`): decides which game to add next. It reads the catalog, mocks, references and its own memory of past suggestions (`memory: project` → `.claude/agent-memory/game-planner/`), recommends one game with a brief for `/game-spec`, and updates `references/templates/game-suggestions-todo.md`. It never writes specs or code.
+- `game-jam` subagent (`.claude/agents/game-jam.md`): given a theme (e.g. "juego sobre café"), designs 2 games with different core mechanics and writes a full spec for each (same shape as SPEC 07–09) in `specs/game-jam/<code>/spec.md`, status `Draft`, titled `SPEC JAM` with no number. It asks no questions (its choices are marked "Decisión del jam") and writes no code. To implement one, promote it to `specs/NN-juego-<code>.md` and approve it before `/spec-impl`.
+- `mobile-porter` subagent (`.claude/agents/mobile-porter.md`): reviews the site in mobile browsers (iOS Safari, Chrome Android, portrait and landscape) on every screen and in the player with the SPEC 10 gamepad. It reads the code, takes screenshots with claude-in-chrome if the dev server is already running (it never starts it), reports prioritized findings and writes one `Draft` spec at `specs/NN-movil-<slug>.md`. It asks no questions (its choices are marked "Decisión de mobile-porter"), writes no code (`Edit` is disallowed) and tracks its findings in `memory: project` → `.claude/agent-memory/mobile-porter/`.
 
 Rules that apply while implementing a spec:
 
@@ -34,12 +38,13 @@ Rules that apply while implementing a spec:
 
 Spec format (`.agents/skills/spec/template.md`): a blockquote header (`Status`, `Depends on`, `Date`, one-sentence `Objective`), then Scope (with explicit "Out"), Data model, Implementation plan (each step leaves the app runnable and is committable alone), boolean Acceptance criteria, Decisions (taken and discarded, with reasons), optional Risks, and a closing "What is not in this spec". Valid statuses: Draft, In review, Approved, Implemented, Obsolete. No TODOs and no long code in specs.
 
-The next spec is `10-...`.
+The next spec is `12-...`.
 
 ## References (design and source material, not app code)
 
 - `references/templates/`: static Spanish prototype of the UI (CDN React 18 + in-browser Babel, one `styles.css`, mock data in `data.jsx`). `home-about/` holds the Home and About designs. Port the design from here rather than copying the CDN/Babel setup. Its styles were ported into `app/globals.css`.
 - `references/templates/implemented-games.md`: snapshot of the playable games (code, category, color, lives, controls, origin spec/migration, source files, plays/best/leader read from Supabase on 2026-10-08). Check it first for an overview of the real games; the database and the code win if they disagree. Update it when a game spec is implemented.
+- `references/templates/game-suggestions-todo.md`: To Do of game ideas (Pendientes, En spec, Implementados, Ideas en reserva, Descartados), maintained by `game-planner`; editable by hand.
 - `references/started-games/NN-<game>/`: standalone vanilla-JS canvas games (`game.js`, `index.html`) used as the source when porting a game (Asteroids, Tetris, Arkanoid so far).
 - `references/source-assets/`: art for games designed from scratch (e.g. `snake-assets/` fruit sprites).
 - `references/gamepad-assets/`: standalone "Gamepad MK-II" design (`gamepad.html`, `gamepad-neon.png`), the source of the touch gamepad's look (SPEC 11). Ported into `components/touch-gamepad.tsx` and the `av-gamepad*` classes; the app does not import it.
@@ -96,5 +101,6 @@ Copy `.env.example` to `.env.local`:
 
 - Each game is an engine in `lib/games/<code>/` (`constants.ts`, `engine.ts`, plus e.g. `entities.ts` or `levels.ts`) that knows nothing about React: `create<Name>Game(canvas, callbacks)` drives the loop/input/phases and reports through `onStats`/`onGameOver`.
 - A canvas component in `components/games/<code>-canvas.tsx` wraps the engine and implements `GameCanvasProps` / `GameCanvasHandle` (`end`, `restart`).
-- `components/games/registry.ts` maps `games.code` to the component and its initial HUD stats (`lives: null` hides VIDAS). `components/game-player.tsx` mounts the real game only when the code is registered **and** the row is `playable`; otherwise it falls back to the simulation, and `GameOverModal` only offers saving for real games.
-- Adding a game needs no leaderboard changes: a migration for the row, the engine, the canvas component, and a registry entry (see `.claude/skills/game-spec/playbook.md`).
+- `components/games/registry.ts` maps `games.code` to the component, its initial HUD stats (`lives: null` hides VIDAS) and its required `touch` mapping (gamepad button → `KeyboardEvent.code`, optional `repeat`). `components/game-player.tsx` mounts the real game only when the code is registered **and** the row is `playable`; otherwise it falls back to the simulation, and `GameOverModal` only offers saving for real games.
+- Touch input (SPEC 10, look from SPEC 11): `components/touch-gamepad.tsx` (PAUSA on top, D-pad, B, A) is mounted by `game-player.tsx` through `CrtScreen`'s `controls` prop. It only shows under `@media (hover: none) and (pointer: coarse)`, and it dispatches synthetic `keydown`/`keyup` on `window` with the mapped `code`. So engines must read keyboard input by `e.code` only, never filter by `e.isTrusted` or rely on `e.key`. Each canvas's start overlay also starts on a non-mouse `onPointerDown` and shows `av-hint-keys` / `av-hint-touch` ("TOCA PARA EMPEZAR").
+- Adding a game needs no leaderboard changes: a migration for the row, the engine, the canvas component, and a registry entry with its `touch` mapping (see `.claude/skills/game-spec/playbook.md`).
