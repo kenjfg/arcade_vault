@@ -1,6 +1,7 @@
 import type { ComponentType, Ref } from "react";
 import { ArkanoidCanvas } from "@/components/games/arkanoid-canvas";
 import { AsteroidsCanvas } from "@/components/games/asteroids-canvas";
+import { FroggerCanvas } from "@/components/games/frogger-canvas";
 import { SnakeCanvas } from "@/components/games/snake-canvas";
 import { TetrisCanvas } from "@/components/games/tetris-canvas";
 
@@ -68,6 +69,18 @@ export const GAME_REGISTRY: Record<string, GameRegistryEntry> = {
     touch: {
       left: { code: "ArrowLeft" },
       right: { code: "ArrowRight" },
+      a: { code: "Space" },
+    },
+  },
+  frogger: {
+    Component: FroggerCanvas,
+    initialStats: { score: 0, lives: 3, level: 1 },
+    // One jump per touch, like one keypress: no auto-repeat.
+    touch: {
+      left: { code: "ArrowLeft" },
+      right: { code: "ArrowRight" },
+      up: { code: "ArrowUp" },
+      down: { code: "ArrowDown" },
       a: { code: "Space" },
     },
   },

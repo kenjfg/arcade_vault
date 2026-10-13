@@ -8,11 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Arcade Vault: an online games platform where players compete for the highest score. The UI is in Spanish (retro/neon "Portal Retro" style). The README (in Spanish) says the project follows spec-driven design (`/spec` and `/spec-impl`) using the skills from `Klerith/fernando-skills` (installed with `npx skills@latest add Klerith/fernando-skills`).
 
-Current state (specs 01–11, all `Implemented`):
+Current state (specs 01–12, all `Implemented`):
 
 - Screens ported from the prototype: Home `/`, library `/juegos`, game detail `/juegos/[id]`, player `/juegos/[id]/jugar`, auth `/iniciar-sesion`, Hall of Fame `/salon-de-la-fama`, About + contact form `/acerca`.
 - Catalog, categories and scores live in Supabase (SPEC 04/06).
-- Four real, playable games with leaderboard: Asteroids (05), Tetris (07), Arkanoid (08), Snake (09). The remaining catalog rows are mocks: the player runs a simulated score for them that cannot be saved.
+- Five real, playable games with leaderboard: Asteroids (05), Tetris (07), Arkanoid (08), Snake (09), Frogger (12). The remaining catalog rows are mocks: the player runs a simulated score for them that cannot be saved.
 - Touch devices get a shared virtual gamepad under the CRT screen and can start a game by touching it (SPEC 10), styled as the neon "Gamepad MK-II" (SPEC 11). Apart from thinner gutters at ≤620px, the rest of the player layout is still desktop-first.
 - Contact form sends real email through Resend (SPEC 03).
 - Auth is still simulated: `lib/auth-context.tsx` keeps a `{ name }` user in `localStorage` (`av_user`). There is no Supabase Auth yet, so anyone can submit a score.
@@ -24,7 +24,8 @@ Features are built through user-invoked skills (`disable-model-invocation: true`
 
 - `/spec <feature description>`: produces a spec, writes no code. It reads this file, asks clarifying questions in blocks of 3-5, then saves `specs/NN-slug.md` (next sequential number, kebab-case slug) with status `Draft`, and stops without offering to implement. It replies in the language of the prompt, and new specs must match the language and state wording of the existing ones (Spanish body, English header keys and status values, e.g. `> **Status:** Draft`).
 - `/spec-impl <NN-slug | NN | slug>`: implements a spec. It refuses unless the status means "Approved" (`Approved`/`Aprobado`, etc.); only the human changes Draft to Approved, and the agent must never do it. It then creates and switches to git branch `spec-NN-slug` (`AutoCreateBranch: true` in `specs/.spec-config.yml`; `false` would ask `[y/N]`), and warns first if the working tree is dirty.
-- `/game-spec <reference folder | game description>`: project-local skill in `.claude/skills/game-spec/` (not in `.agents/skills/` or `skills-lock.json`). A `/spec` specialized for adding a playable game with its leaderboard: ports a game from `references/started-games/` or designs one from scratch, asks about mock conversion, catalog row, HUD mapping and mechanics, and saves `specs/NN-juego-<code>.md` as `Draft`. Its `playbook.md` holds the pattern from SPEC 05/06 (engine contract, canvas component, game registry, migration, base acceptance criteria). Implement the result with `/spec-impl`.
+- `/game-spec <reference folder | game description>`: project-local skill in `.claude/skills/game-spec/` (not in `.agents/skills/` or `skills-lock.json`). A `/spec` specialized for adding a playable game with its leaderboard: ports a game from `references/started-games/` or designs one from scratch, asks about mock conversion, catalog row, HUD mapping and mechanics, and saves `specs/NN-juego-<code>.md` as `Draft`. Its `playbook.md` holds the pattern from SPEC 05/06 (engine contract, canvas component, game registry, migration, base acceptance criteria). Implement the result with `/spec-impl` or `/spec-impl-game`.
+- `/spec-impl-game <NN-juego-code | NN | juego-code>`: project-local skill in `.claude/skills/spec-impl-game/`. It reads `.agents/skills/spec-impl/SKILL.md` and follows its phases unchanged, but only accepts `specs/NN-juego-<code>.md`. When the last step is done it automatically launches the `mobile-porter` subagent, focused on `/juegos/<code>` and `/juegos/<code>/jugar`, which leaves a `Draft` `specs/NN-movil-<slug>.md` on the game branch.
 - `game-planner` subagent (`.claude/agents/game-planner.md`): decides which game to add next. It reads the catalog, mocks, references and its own memory of past suggestions (`memory: project` → `.claude/agent-memory/game-planner/`), recommends one game with a brief for `/game-spec`, and updates `references/templates/game-suggestions-todo.md`. It never writes specs or code.
 - `game-jam` subagent (`.claude/agents/game-jam.md`): given a theme (e.g. "juego sobre café"), designs 2 games with different core mechanics and writes a full spec for each (same shape as SPEC 07–09) in `specs/game-jam/<code>/spec.md`, status `Draft`, titled `SPEC JAM` with no number. It asks no questions (its choices are marked "Decisión del jam") and writes no code. To implement one, promote it to `specs/NN-juego-<code>.md` and approve it before `/spec-impl`.
 - `mobile-porter` subagent (`.claude/agents/mobile-porter.md`): reviews the site in mobile browsers (iOS Safari, Chrome Android, portrait and landscape) on every screen and in the player with the SPEC 10 gamepad. It reads the code, takes screenshots with claude-in-chrome if the dev server is already running (it never starts it), reports prioritized findings and writes one `Draft` spec at `specs/NN-movil-<slug>.md`. It asks no questions (its choices are marked "Decisión de mobile-porter"), writes no code (`Edit` is disallowed) and tracks its findings in `memory: project` → `.claude/agent-memory/mobile-porter/`.
@@ -38,7 +39,7 @@ Rules that apply while implementing a spec:
 
 Spec format (`.agents/skills/spec/template.md`): a blockquote header (`Status`, `Depends on`, `Date`, one-sentence `Objective`), then Scope (with explicit "Out"), Data model, Implementation plan (each step leaves the app runnable and is committable alone), boolean Acceptance criteria, Decisions (taken and discarded, with reasons), optional Risks, and a closing "What is not in this spec". Valid statuses: Draft, In review, Approved, Implemented, Obsolete. No TODOs and no long code in specs.
 
-The next spec is `12-...`.
+The next spec is `13-...`.
 
 ## References (design and source material, not app code)
 

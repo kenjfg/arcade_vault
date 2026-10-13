@@ -10,6 +10,9 @@ Juegos reales y jugables (`games.playable = true`) del catálogo de Supabase, en
 | 2   | `arkanoid`  | ARKANOID  | ARCADE    | cyan    | 3     | SPEC 08 | 1       | 580    | KEN    |
 | 3   | `tetris`    | TETRIS    | PUZZLE    | magenta | —     | SPEC 07 | 2       | 1774   | TUREY  |
 | 4   | `snake`     | SNAKE     | ARCADE    | green   | —     | SPEC 09 | 1       | 420    | JEJEJE |
+| 8   | `frogger`   | FROGGER   | ARCADE    | green   | 3     | SPEC 12 | 0       | —      | —      |
+
+FROGGER se consultó el 2026-10-13, recién convertido y aún sin partidas.
 
 "—" en Vidas: el juego tiene una sola vida y el HUD oculta VIDAS (`lives: null` en `components/games/registry.ts`).
 
@@ -66,6 +69,19 @@ En móviles y tablets táctiles (`(hover: none) and (pointer: coarse)`), bajo la
 - **Táctil:** ◀ ▲ ▶ ▼ cambiar de dirección · A empezar · B sin uso.
 - **HUD inicial:** puntuación 0 · sin vidas · nivel 1.
 - **Código:** `lib/games/snake/` (`constants.ts`, `engine.ts`) · `components/games/snake-canvas.tsx`.
+
+## 5. FROGGER
+
+- **Código / URL:** `frogger` → `/juegos/frogger/jugar`
+- **Categoría:** ARCADE · **Color:** green · **Portada:** `cover-rana`
+- **Descripción corta:** Cruza la autopista de pixeles.
+- **Descripción larga:** Salta entre carriles de coches a toda velocidad y troncos a la deriva en el río. Llega a los nenúfares antes de que se acabe el tiempo.
+- **Origen:** diseñado desde cero, todo vectorial (SPEC 12, promovido del SPEC JAM "juego frogger"). Convirtió el mock RANARIA (migración `20261013171028_convert_ranaria_to_frogger.sql`). Está en la octava posición de la biblioteca, así que no sale en la Home.
+- **Mecánica:** 5 carriles de carretera y 5 de río, 5 nenúfares, 30 s por rana con barra de tiempo en el canvas. 10 puntos por fila nueva, 50 + 10 por segundo restante al llegar a un nenúfar y 1 000 al llenar los 5, que sube el nivel y acelera los carriles un 15 % (tope en el nivel 8).
+- **Controles:** `←` `↑` `→` `↓` o `W` `A` `S` `D` saltar una casilla (mantener la tecla no repite).
+- **Táctil:** ◀ ▲ ▶ ▼ saltar (un salto por toque, sin repetición) · A empezar · B sin uso.
+- **HUD inicial:** puntuación 0 · vidas 3 · nivel 1.
+- **Código:** `lib/games/frogger/` (`constants.ts`, `engine.ts`) · `components/games/frogger-canvas.tsx`.
 
 ---
 

@@ -16,6 +16,7 @@ Formato: `- [ ] **TÍTULO** (`code`) · CATEGORÍA · color · origen · sugerid
 - [x] **TETRIS** (`tetris`) · PUZZLE · magenta · origen: mock `caida` / referencia 03-tetris · SPEC 07
 - [x] **ARKANOID** (`arkanoid`) · ARCADE · cyan · origen: mock `bloque-buster` / referencia 04-arkanoid · SPEC 08
 - [x] **SNAKE** (`snake`) · ARCADE · green · origen: mock `serpentina` (desde cero, `snake-assets`) · SPEC 09
+- [x] **FROGGER** (`frogger`) · ARCADE · green · origen: mock `ranaria` (desde cero, SPEC JAM) · SPEC 12
 
 ## Ideas en reserva
 
@@ -27,7 +28,6 @@ Ronda de 15 ideas (2026-10-08), en orden de prioridad propuesto. Las filas nueva
 - [ ] **CICLOS DE LUZ** (`ciclos`) · VERSUS · magenta · origen: fila nueva o mock `duelo-pixel` (desde cero, Tron vs CPU) · sugerido 2026-10-08: primer VERSUS real con puntuación individual clara; riesgo: IA por flood fill
 - [ ] **DEFENSA MISIL** (`defensa-misil`) · SHOOTER · yellow · origen: mock `rocas` (desde cero, tipo Missile Command) · sugerido 2026-10-08: convierte el mock duplicado de Asteroids en una mecánica nueva; necesita `cover-misil`
 - [ ] **FUGA NEÓN** (`fuga-neon`) · ARCADE · magenta · origen: fila nueva (desde cero, runner con cambio de gravedad) · sugerido 2026-10-08: género nuevo, un botón, multiplicador por roce
-- [ ] **RANARIA** (`ranaria`) · ARCADE · green · origen: mock `ranaria` (desde cero, tipo Frogger) · sugerido 2026-10-08: mecánica de cruce única y `cover-rana` existe, pero tercer ARCADE y otra vez green; puntos por fila nueva para no inflar con el temporizador
 - [ ] **CIEMPIÉS** (`ciempies`) · SHOOTER · magenta · origen: fila nueva (desde cero, tipo Centipede) · sugerido 2026-10-08: puntuación con riesgo/recompensa (araña), 2.º magenta; satura SHOOTER si entra con Invasores
 - [ ] **ALUNIZAJE** (`alunizaje`) · ARCADE · cyan · origen: fila nueva (desde cero, tipo Lunar Lander) · sugerido 2026-10-08: precisión en vez de reflejos; repite controles de Asteroids y sería el 3.er cyan (cambiar color)
 - [ ] **JOYAS** (`joyas`) · PUZZLE · green · origen: fila nueva (desde cero, match-3 contra reloj) · sugerido 2026-10-08: partidas cortas con cascadas; riesgo: cursor con teclado
