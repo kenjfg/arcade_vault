@@ -52,7 +52,8 @@ export function GamePlayer({ game }: GamePlayerProps) {
   const { score, lives, level } = isReal
     ? gameStats
     : { score: simScore, lives: 3, level: Math.floor(simScore / 2500) + 1 };
-  const name = nameOverride ?? (user ? user.name : "INVITADO");
+  // Signed in, the score is always saved under the account's username.
+  const name = user ? user.name : (nameOverride ?? "INVITADO");
 
   const endGame = () => {
     gameRef.current?.end();
@@ -116,6 +117,7 @@ export function GamePlayer({ game }: GamePlayerProps) {
         <GameOverModal
           score={score}
           name={name}
+          nameLocked={user !== null}
           playable={isReal}
           saveState={saveState}
           onNameChange={(value) =>

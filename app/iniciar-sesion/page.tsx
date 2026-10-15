@@ -1,26 +1,15 @@
-"use client";
+import { LoginForm } from "@/components/login-form";
 
-import { useRouter } from "next/navigation";
-import { AuthForm } from "@/components/auth-form";
-import { useAuth } from "@/lib/auth-context";
-
-export default function AuthPage() {
-  const router = useRouter();
-  const { login } = useAuth();
-
-  const handleLogin = (name: string) => {
-    login({ name });
-    router.push("/juegos");
-  };
-
-  const handleGuest = () => {
-    login(null);
-    router.push("/juegos");
-  };
+export default async function LoginPage({
+  searchParams,
+}: PageProps<"/iniciar-sesion">) {
+  const { error } = await searchParams;
 
   return (
     <div className="av-auth-wrap fade-in">
-      <AuthForm onLogin={handleLogin} onGuest={handleGuest} />
+      <LoginForm
+        urlError={error === "enlace" || error === "oauth" ? error : null}
+      />
     </div>
   );
 }
