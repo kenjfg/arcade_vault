@@ -204,6 +204,7 @@ export type Database = {
       }
     }
     Functions: {
+      generate_username: { Args: { p_seed: string }; Returns: string }
       username_available: { Args: { p_username: string }; Returns: boolean }
     }
     Enums: {

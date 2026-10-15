@@ -6,32 +6,41 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { authConfirmUrl, useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 
-type LoginError = "credentials" | "unconfirmed" | "network" | "link";
+type LoginError = "credentials" | "unconfirmed" | "network" | "link" | "oauth";
 
 const ERROR_TEXT: Record<LoginError, string> = {
   credentials: "CORREO O CONTRASEÑA INCORRECTOS",
   unconfirmed: "CONFIRMA TU CORREO ANTES DE ENTRAR",
   network: "NO SE PUDO CONECTAR. INTÉNTALO DE NUEVO",
   link: "EL ENLACE NO ES VÁLIDO O HA CADUCADO",
+  oauth: "NO SE PUDO INICIAR SESIÓN. INTÉNTALO DE NUEVO",
 };
+
+type OAuthProvider = "google" | "github";
 
 type ResendState = "idle" | "sending" | "sent" | "failed";
 
 interface LoginFormProps {
-  // The page got ?error=enlace from /auth/confirm.
-  linkError: boolean;
+  // ?error= from the URL: "enlace" from /auth/confirm, "oauth" from /auth/callback.
+  urlError: "enlace" | "oauth" | null;
 }
 
-export function LoginForm({ linkError }: LoginFormProps) {
+const URL_ERRORS: Record<"enlace" | "oauth", LoginError> = {
+  enlace: "link",
+  oauth: "oauth",
+};
+
+export function LoginForm({ urlError }: LoginFormProps) {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<LoginError | null>(
-    linkError ? "link" : null,
+    urlError ? URL_ERRORS[urlError] : null,
   );
   const [resend, setResend] = useState<ResendState>("idle");
+  const [oauthPending, setOauthPending] = useState<OAuthProvider | null>(null);
   const redirected = useRef(false);
 
   // Signed in (already, or right after submitting): go to the library.
@@ -59,6 +68,22 @@ export function LoginForm({ linkError }: LoginFormProps) {
     else if (signInError.code === "email_not_confirmed")
       setError("unconfirmed");
     else setError("network");
+  };
+
+  // Leaves for the provider; it comes back through /auth/callback.
+  const signInWithProvider = async (provider: OAuthProvider) => {
+    setOauthPending(provider);
+    setError(null);
+    const { error: oauthError } = await createClient().auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/juegos`,
+      },
+    });
+    if (oauthError) {
+      setOauthPending(null);
+      setError("network");
+    }
   };
 
   const resendConfirmation = async () => {
@@ -181,11 +206,21 @@ export function LoginForm({ linkError }: LoginFormProps) {
 
       <div className="auth-divider">O CONTINÚA CON</div>
       <div className="social">
-        <button className="btn ghost" type="button" disabled>
-          ◆ GOOGLE · PRÓXIMAMENTE
+        <button
+          className="btn ghost"
+          type="button"
+          disabled={oauthPending !== null}
+          onClick={() => signInWithProvider("google")}
+        >
+          {oauthPending === "google" ? "CONECTANDO..." : "◆ GOOGLE"}
         </button>
-        <button className="btn ghost" type="button" disabled>
-          ▣ GITHUB · PRÓXIMAMENTE
+        <button
+          className="btn ghost"
+          type="button"
+          disabled={oauthPending !== null}
+          onClick={() => signInWithProvider("github")}
+        >
+          {oauthPending === "github" ? "CONECTANDO..." : "▣ GITHUB"}
         </button>
       </div>
 

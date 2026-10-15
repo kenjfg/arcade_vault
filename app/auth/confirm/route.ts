@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { createClient } from "@/lib/supabase/server";
 
 // Target of the links in the "Confirm signup" and "Reset password" emails
@@ -8,17 +9,8 @@ import { createClient } from "@/lib/supabase/server";
 const ALLOWED_TYPES = ["email", "recovery"] as const;
 type ConfirmType = (typeof ALLOWED_TYPES)[number];
 
-const DEFAULT_NEXT = "/juegos";
-
 function isConfirmType(value: string | null): value is ConfirmType {
   return ALLOWED_TYPES.includes(value as ConfirmType);
-}
-
-// Only internal paths: an absolute URL or a protocol-relative "//host" would
-// turn this route into an open redirect.
-function safeNext(next: string | null): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return DEFAULT_NEXT;
-  return next;
 }
 
 export async function GET(request: NextRequest) {

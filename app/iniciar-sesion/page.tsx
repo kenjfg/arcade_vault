@@ -7,7 +7,9 @@ export default async function LoginPage({
 
   return (
     <div className="av-auth-wrap fade-in">
-      <LoginForm linkError={error === "enlace"} />
+      <LoginForm
+        urlError={error === "enlace" || error === "oauth" ? error : null}
+      />
     </div>
   );
 }
