@@ -196,18 +196,20 @@
   .av-nav .coin-counter { display: flex; align-items: center; gap: 8px; font-family: var(--pixel); font-size: 9px; color: var(--yellow); }
   .av-nav .coin-counter .coin { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff8b0, #f5ff00 60%, #b0b800); box-shadow: 0 0 8px var(--yellow); }
   .av-nav .auth-btn { margin-left: 16px; }
+  .av-nav .auth-user { margin-left: 16px; font-family: var(--pixel); font-size: 9px; letter-spacing: 0.16em; color: var(--cyan); text-shadow: 0 0 8px rgba(0,245,255,0.65); }
+  .av-nav .auth-user + .auth-btn { margin-left: 0; }
   .av-nav .hamburger { display: none; }
 
   @media (max-width: 840px) {
     .av-nav { padding: 12px 16px; gap: 12px; }
-    .av-nav .auth-btn { margin-left: 0; }
+    .av-nav .auth-btn, .av-nav .auth-user { margin-left: 0; }
     .av-nav .links { display: none; }
     .av-nav .coin-counter { display: none; }
     .av-nav .hamburger { display: inline-flex; }
   }
   /* the mobile panel already offers login/logout */
   @media (max-width: 480px) {
-    .av-nav .auth-btn { display: none; }
+    .av-nav .auth-btn, .av-nav .auth-user { display: none; }
   }
 
   .av-mobile-panel {
@@ -1087,6 +1089,16 @@
   .auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   .social { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .social .btn { padding: 12px; font-size: 9px; }
+  .social .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .field-error { font-family: var(--mono); font-size: 11px; color: var(--magenta); letter-spacing: 0.08em; }
+  .auth-msg {
+    margin: 4px 0 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; line-height: 1.5;
+  }
+  .auth-msg.error { border-color: var(--magenta); color: var(--magenta); background: rgba(255,0,110,0.06); }
+  .auth-msg.ok { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.06); }
 
   /* ===== salón ===== */
   .av-hall {

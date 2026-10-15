@@ -3,6 +3,8 @@ export type SaveState = "idle" | "saving" | "saved" | "error";
 interface GameOverModalProps {
   score: number;
   name: string;
+  // Signed in: the name is the account's username and can't be edited.
+  nameLocked: boolean;
   // false for the mock games: their simulated score can't be saved.
   playable: boolean;
   saveState: SaveState;
@@ -15,6 +17,7 @@ interface GameOverModalProps {
 export function GameOverModal({
   score,
   name,
+  nameLocked,
   playable,
   saveState,
   onNameChange,
@@ -43,6 +46,7 @@ export function GameOverModal({
                 value={name}
                 onChange={(e) => onNameChange(e.target.value)}
                 placeholder="TUS INICIALES"
+                readOnly={nameLocked}
                 disabled={saving}
               />
               <button className="btn yellow" onClick={onSave} disabled={saving}>

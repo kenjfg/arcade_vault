@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 export function Nav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [open, setOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -20,8 +20,8 @@ export function Nav() {
 
   const close = () => setOpen(false);
 
-  const handleSignOut = () => {
-    logout();
+  const handleSignOut = async () => {
+    await logout();
     router.push("/");
   };
 
@@ -53,10 +53,13 @@ export function Nav() {
           <span className="coin"></span>
           <span>CRÉDITOS · 03</span>
         </div>
-        {user ? (
-          <button className="btn ghost auth-btn" onClick={handleSignOut}>
-            {user.name} ▾
-          </button>
+        {loading ? null : user ? (
+          <>
+            <span className="auth-user">{user.name}</span>
+            <button className="btn ghost auth-btn" onClick={handleSignOut}>
+              Cerrar sesión
+            </button>
+          </>
         ) : (
           <Link href="/iniciar-sesion" className="btn auth-btn">
             Iniciar Sesión
@@ -88,11 +91,11 @@ export function Nav() {
         <Link href="/acerca" className={isActive("/acerca") ? "active" : ""} onClick={close}>
           Acerca de
         </Link>
-        {user ? (
+        {loading ? null : user ? (
           <a
             onClick={() => {
               close();
-              handleSignOut();
+              void handleSignOut();
             }}
           >
             Cerrar sesión

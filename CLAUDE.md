@@ -8,14 +8,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Arcade Vault: an online games platform where players compete for the highest score. The UI is in Spanish (retro/neon "Portal Retro" style). The README (in Spanish) says the project follows spec-driven design (`/spec` and `/spec-impl`) using the skills from `Klerith/fernando-skills` (installed with `npx skills@latest add Klerith/fernando-skills`).
 
-Current state (specs 01–12, all `Implemented`):
+Current state (specs 01–14, all `Implemented`):
 
-- Screens ported from the prototype: Home `/`, library `/juegos`, game detail `/juegos/[id]`, player `/juegos/[id]/jugar`, auth `/iniciar-sesion`, Hall of Fame `/salon-de-la-fama`, About + contact form `/acerca`.
+- Screens ported from the prototype: Home `/`, library `/juegos`, game detail `/juegos/[id]`, player `/juegos/[id]/jugar`, Hall of Fame `/salon-de-la-fama`, About + contact form `/acerca`.
 - Catalog, categories and scores live in Supabase (SPEC 04/06).
 - Five real, playable games with leaderboard: Asteroids (05), Tetris (07), Arkanoid (08), Snake (09), Frogger (12). The remaining catalog rows are mocks: the player runs a simulated score for them that cannot be saved.
 - Touch devices get a shared virtual gamepad under the CRT screen and can start a game by touching it (SPEC 10), styled as the neon "Gamepad MK-II" (SPEC 11). Apart from thinner gutters at ≤620px, the rest of the player layout is still desktop-first.
 - Contact form sends real email through Resend (SPEC 03).
-- Auth is still simulated: `lib/auth-context.tsx` keeps a `{ name }` user in `localStorage` (`av_user`). There is no Supabase Auth yet, so anyone can submit a score.
+- Auth is real (SPEC 14): Supabase Auth with email + password and email confirmation. Screens `/iniciar-sesion`, `/registro`, `/recuperar-contrasena`, `/nueva-contrasena`; Google/GitHub buttons are disabled ("PRÓXIMAMENTE") until SPEC 15. Guests can still play and save scores under any name: `scores` is not tied to accounts yet.
 - No tests.
 
 ## Spec-driven workflow
@@ -39,7 +39,7 @@ Rules that apply while implementing a spec:
 
 Spec format (`.agents/skills/spec/template.md`): a blockquote header (`Status`, `Depends on`, `Date`, one-sentence `Objective`), then Scope (with explicit "Out"), Data model, Implementation plan (each step leaves the app runnable and is committable alone), boolean Acceptance criteria, Decisions (taken and discarded, with reasons), optional Risks, and a closing "What is not in this spec". Valid statuses: Draft, In review, Approved, Implemented, Obsolete. No TODOs and no long code in specs.
 
-The next spec is `13-...`.
+The next spec is `15-...` (reserved for Google/GitHub OAuth, the SPEC 14 follow-up).
 
 ## References (design and source material, not app code)
 
@@ -94,9 +94,12 @@ Copy `.env.example` to `.env.local`:
 
 - `lib/supabase/server.ts` (`createClient()`, async, per request, cookie-bound) for Server Components/Functions/Route Handlers; `lib/supabase/client.ts` for Client Components. Both are typed with `Database` from `lib/supabase/database.types.ts` (generated; don't hand-edit, run `npm run db:types`).
 - Schema (`supabase/migrations/`): tables `categories`, `games` (`code` unique slug, `color` in cyan/magenta/yellow/green, `playable`, unique `sort_order`), `scores` (name 1–10 chars, score 0–10 000 000); views `leaderboard` (with `rank`) and `game_stats` (`plays`, `best`), both `security_invoker`. RLS: everything is readable by anon; anon can only insert scores for playable games. Converting a mock into a real game is an UPDATE migration of its row (`convert_<mock>_to_<code>`).
+- `profiles` (SPEC 14): one row per auth user, `username` unique `^[A-Z0-9_]{3,10}$` (fits `scores.name`). Created only by the `on_auth_user_created` trigger from signUp's `options.data.username`, so a user without that metadata (e.g. dashboard "Add user") is rejected. RLS: a user reads only their own row. `username_available(text)` is a `security definer` RPC callable by anon for the signup form (its advisor WARN is expected).
 - `lib/games-data.ts`: shared types (`Game`, `GameWithStats`, `Category`, `ScoreRow`) and `formatScoreDate`. `lib/games-db.ts`: server-only reads (`getGames`, `getGame`, `getCategories`, `getLeaderboard`); stats failures degrade to "RANKING NO DISPONIBLE" instead of throwing.
 - `submitScore` (`app/juegos/[id]/jugar/actions.ts`) is the only write: it re-validates name/score/playable and revalidates the affected pages. `app/api/health/route.ts` checks the Supabase connection.
-- The Hall of Fame reads the simulated user's "TÚ" row from the browser with the client Supabase client.
+- Auth (SPEC 14): `proxy.ts` (Next 16's name for middleware) calls `updateSession` in `lib/supabase/proxy.ts` to refresh the session cookies on every request. `lib/auth-context.tsx` (`AuthProvider`/`useAuth`) listens to `onAuthStateChange` on the browser client and exposes `{ user: { name } | null, loading, logout }`, where `name` is `profiles.username`. Auth calls (`signInWithPassword`, `signUp`, `resend`, `resetPasswordForEmail`, `updateUser`, `signOut`) run in Client Components so the context updates at once. Email links land on `app/auth/confirm/route.ts` (`verifyOtp` with `token_hash`, internal `next` only); Site URL and redirect URLs are set by hand in the Supabase dashboard (mirrored in `supabase/config.toml`). Emails use Supabase's default SMTP, which allows only a few per hour and, on the free plan, does not allow editing the email templates. So the default links still arrive with `?code=` instead of `token_hash`: signup confirmation works (Supabase confirms before redirecting) but the app shows the invalid-link error, and password recovery does not work yet (known gap, see the SPEC 14 risks).
+- Signed in, the game-over modal locks the name to the username (`nameLocked`); guests keep an editable "INVITADO".
+- The Hall of Fame reads the signed-in user's "TÚ" row from the browser with the client Supabase client.
 
 ### Games
 
