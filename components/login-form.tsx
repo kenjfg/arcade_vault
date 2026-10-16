@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { authConfirmUrl, useAuth } from "@/lib/auth-context";
+import { isRateLimitError, RATE_LIMIT_MESSAGE } from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase/client";
 
-type LoginError = "credentials" | "unconfirmed" | "network" | "link" | "oauth";
+type LoginError =
+  "credentials" | "unconfirmed" | "network" | "link" | "oauth" | "rate";
 
 const ERROR_TEXT: Record<LoginError, string> = {
   credentials: "CORREO O CONTRASEÑA INCORRECTOS",
@@ -14,6 +16,7 @@ const ERROR_TEXT: Record<LoginError, string> = {
   network: "NO SE PUDO CONECTAR. INTÉNTALO DE NUEVO",
   link: "EL ENLACE NO ES VÁLIDO O HA CADUCADO",
   oauth: "NO SE PUDO INICIAR SESIÓN. INTÉNTALO DE NUEVO",
+  rate: RATE_LIMIT_MESSAGE,
 };
 
 type OAuthProvider = "google" | "github";
@@ -67,6 +70,7 @@ export function LoginForm({ urlError }: LoginFormProps) {
     if (signInError.code === "invalid_credentials") setError("credentials");
     else if (signInError.code === "email_not_confirmed")
       setError("unconfirmed");
+    else if (isRateLimitError(signInError)) setError("rate");
     else setError("network");
   };
 

@@ -4,6 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { authConfirmUrl, useAuth } from "@/lib/auth-context";
+import {
+  isRateLimitError,
+  RATE_LIMIT_MESSAGE,
+  weakPasswordMessage,
+} from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase/client";
 
 // Same rule as the profiles.username check constraint.
@@ -12,10 +17,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const MIN_PASSWORD = 8;
 
 const USERNAME_TAKEN = "ESE NOMBRE YA ESTÁ EN USO";
+const SIGNUP_FAILED = "NO SE PUDO CREAR LA CUENTA. INTÉNTALO DE NUEVO";
 
 type Field = "username" | "email" | "password" | "repeat";
 type FieldErrors = Partial<Record<Field, string>>;
-type ResendState = "idle" | "sending" | "sent" | "failed";
+type ResendState = "idle" | "sending" | "sent" | "failed" | "rate";
 
 function validate(
   username: string,
@@ -41,7 +47,7 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [resend, setResend] = useState<ResendState>("idle");
@@ -56,7 +62,7 @@ export function RegisterForm() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    setFormError(false);
+    setFormError(null);
     const errors = validate(username, email, password, repeat);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) return;
@@ -69,7 +75,7 @@ export function RegisterForm() {
     );
     if (rpcError) {
       setSubmitting(false);
-      setFormError(true);
+      setFormError(SIGNUP_FAILED);
       return;
     }
     if (!available) {
@@ -91,13 +97,16 @@ export function RegisterForm() {
       setSentTo(email);
       return;
     }
+    const passwordError = weakPasswordMessage(signUpError, MIN_PASSWORD);
     // The profiles trigger failed: another signup took the name since the check.
     if (signUpError.message.includes("Database error saving new user")) {
       setFieldErrors({ username: USERNAME_TAKEN });
-    } else if (signUpError.code === "weak_password") {
-      setFieldErrors({ password: `MÍNIMO ${MIN_PASSWORD} CARACTERES` });
+    } else if (passwordError) {
+      setFieldErrors({ password: passwordError });
+    } else if (isRateLimitError(signUpError)) {
+      setFormError(RATE_LIMIT_MESSAGE);
     } else {
-      setFormError(true);
+      setFormError(SIGNUP_FAILED);
     }
   };
 
@@ -109,7 +118,8 @@ export function RegisterForm() {
       email: sentTo,
       options: { emailRedirectTo: authConfirmUrl("email", "/juegos") },
     });
-    setResend(error ? "failed" : "sent");
+    if (!error) setResend("sent");
+    else setResend(isRateLimitError(error) ? "rate" : "failed");
   };
 
   const header = (
@@ -153,13 +163,15 @@ export function RegisterForm() {
               ? "CORREO REENVIADO"
               : "REENVIAR CORREO"}
         </button>
-        {resend === "failed" && (
+        {(resend === "failed" || resend === "rate") && (
           <div
             className="auth-msg error"
             role="alert"
             style={{ marginTop: 12 }}
           >
-            NO SE PUDO REENVIAR. INTÉNTALO MÁS TARDE
+            {resend === "rate"
+              ? RATE_LIMIT_MESSAGE
+              : "NO SE PUDO REENVIAR. INTÉNTALO MÁS TARDE"}
           </div>
         )}
         <Link
@@ -241,7 +253,7 @@ export function RegisterForm() {
 
         {formError && (
           <div className="auth-msg error" role="alert">
-            NO SE PUDO CREAR LA CUENTA. INTÉNTALO DE NUEVO
+            {formError}
           </div>
         )}
 

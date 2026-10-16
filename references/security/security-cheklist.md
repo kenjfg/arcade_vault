@@ -1,0 +1,28 @@
+## Checklist de seguridad básico
+
+  - [x] RLS: Row Level Security habilitado en ambas tablas: `games` y `scores` (SPEC 16: verificado, y privilegios de `anon`/`authenticated` reducidos al mínimo)
+  - [x] Minimum password length — mínimo 8 caracteres
+  - [x] Leaked password protection — (el warning 4) — pendiente de plan Pro; UI preparada
+  - [x] Max signup rate — limitar signups por IP (anti-bot) (10 cada 5 minutos por IP)
+  - [x] Headers de seguridad en Next.js (`next.config.ts`)
+  
+  Ej:
+
+```ts
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+];
+
+// En la config de Next.js:
+headers: async () => [
+  { source: '/(.*)', headers: securityHeaders }
+]
+```
+
+| name                                               | title                                                 | level | facing   | categories   | description                                                                                                                                                                                                              | detail                                                                                                                                                                                                                                                    | remediation                                                                                                            | metadata                                                                                                               | cache_key                                                                                    | observed_at              |
+| -------------------------------------------------- | ----------------------------------------------------- | ----- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------ |
+| anon_security_definer_function_executable          | Public Can Execute SECURITY DEFINER Function          | WARN  | EXTERNAL | ["SECURITY"] | Detects `SECURITY DEFINER` functions that are callable without signing in. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if it is not meant to be public.       | Function `public.username_available(p_username text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/username_available`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.          | https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable          | {"schema":"public","name":"username_available","language":"sql","arguments":"p_username text","security_definer":true} | anon_security_definer_function_executable_public_username_available_p_username text          | 2026-10-16T00:00:13.219Z |
+| authenticated_security_definer_function_executable | Signed-In Users Can Execute SECURITY DEFINER Function | WARN  | EXTERNAL | ["SECURITY"] | Detects `SECURITY DEFINER` functions that are callable by signed-in users. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if signed-in users should not call it. | Function `public.username_available(p_username text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/username_available`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional. | https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable | {"schema":"public","name":"username_available","language":"sql","arguments":"p_username text","security_definer":true} | authenticated_security_definer_function_executable_public_username_available_p_username text | 2026-10-16T00:00:13.219Z |
+| auth_leaked_password_protection                    | Leaked Password Protection Disabled                   | WARN  | EXTERNAL | ["SECURITY"] | Leaked password protection is currently disabled.                                                                                                                                                                        | Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.                                                                                                                  | https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection               | {"entity":"Auth","type":"auth"}                                                                                        | auth_leaked_password_protection                                                              |                          |

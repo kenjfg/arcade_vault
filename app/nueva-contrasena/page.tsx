@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { MIN_PASSWORD } from "@/components/register-form";
+import { weakPasswordMessage } from "@/lib/auth-errors";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 
@@ -39,10 +40,10 @@ export default function NewPasswordPage() {
       router.push("/juegos");
       return;
     }
+    const passwordError = weakPasswordMessage(error, MIN_PASSWORD);
     if (error.code === "same_password")
       setFormError("LA CONTRASEÑA NUEVA DEBE SER DISTINTA DE LA ANTERIOR");
-    else if (error.code === "weak_password")
-      setFieldErrors({ password: `MÍNIMO ${MIN_PASSWORD} CARACTERES` });
+    else if (passwordError) setFieldErrors({ password: passwordError });
     else setFormError("NO SE PUDO GUARDAR. INTÉNTALO DE NUEVO");
   };
 
